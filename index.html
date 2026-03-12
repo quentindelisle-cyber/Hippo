@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hippopogramme</title>
+
+  <meta name="theme-color" content="#2957d3" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Hippopogramme" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <style>
+    :root{
+      --bg1:#edf4ff;
+      --bg2:#f8fbff;
+      --card:#ffffff;
+      --line:#d6e0ee;
+      --text:#172033;
+      --muted:#66758f;
+      --primary:#2957d3;
+      --primary2:#4d7df8;
+      --success:#0ea66c;
+      --danger:#dc2626;
+      --warning:#f59e0b;
+      --shadow:0 12px 28px rgba(18,34,66,.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(77,125,248,.14), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(14,166,108,.10), transparent 28%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      min-height:100vh;
+    }
+
+    .app{
+      max-width:1500px;
+      margin:0 auto;
+      padding:12px 12px 22px;
+    }
+
+    .header{
+      display:flex;
+      justify-content:flex-start;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      background:linear-gradient(135deg,#ffffff 0%, #eef4ff 100%);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:12px 16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:260px;
+    }
+
+    .logoBox{
+      width:76px;
+      height:76px;
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      border:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 6px 16px rgba(0,0,0,.08);
+      flex:0 0 auto;
+    }
+
+    .logoBox img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(24px,3vw,40px);
+      line-height:1;
+      letter-spacing:.2px;
+    }
+
+    .nav{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:12px 0;
+    }
+
+    button{
+      border:none;
+      border-radius:13px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    button:hover{transform:translateY(-1px)}
+    button.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
+    button.secondary{background:#eaf0ff;color:#2247ba}
+    button.success{background:#dff8ed;color:#066847}
+    button.danger{background:#fee2e2;color:#991b1b}
+    button.warning{background:#fff2d9;color:#9a6500}
+    button.ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
+    button.small{padding:6px 9px;font-size:12px;border-radius:10px}
+
+    .navBtn.active{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:#fff;
+      box-shadow:0 8px 18px rgba(41,87,211,.24);
+    }
+
+    .page{display:none}
+    .page.active{display:block}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:10px;
+    }
+
+    .span-12{grid-column:span 12}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:12px;
+    }
+
+    .cardTitle{
+      margin:0 0 8px;
+      font-size:17px;
+      font-weight:900;
+    }
+
+    .smallText{font-size:12px;color:var(--muted)}
+    .muted{color:var(--muted)}
+
+    .homeButtons{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:12px 0 10px;
+    }
+
+    .animalScaleCompact{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .animalItem{
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#f8fbff;
+      padding:6px 8px;
+      min-height:54px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .animalItem strong{
+      display:block;
+      font-size:13px;
+      margin-bottom:2px;
+      line-height:1.05;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      min-width:110px;
+      flex:1;
+    }
+
+    .field label{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    input,select,textarea{
+      width:100%;
+      border:1px solid #cfd9ea;
+      background:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      font-size:14px;
+      outline:none;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    textarea{
+      min-height:70px;
+      resize:vertical;
+    }
+
+    input[type="color"]{
+      min-height:38px;
+      padding:3px;
+      cursor:pointer;
+    }
+
+    .toggle{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+
+    .toggle button{
+      min-width:165px;
+      background:#eef3ff;
+      color:#3150b5;
+      border:1px solid #d8e2f7;
+    }
+
+    .toggle button.selected{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:#fff;
+      box-shadow:0 8px 18px rgba(41,87,211,.20);
+    }
+
+    .prepareGrid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:10px;
+      align-items:start;
+    }
+
+    .prepareSubCard{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fbfdff;
+      padding:10px;
+    }
+
+    .listBox{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .studentBox,.teamBox,.questionBox{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:8px;
+    }
+
+    .studentRow{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:6px;
+      align-items:center;
+    }
+
+    .teamHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+
+    .colorDot{
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      display:inline-block;
+      border:2px solid rgba(0,0,0,.1);
+      margin-right:6px;
+      vertical-align:middle;
+    }
+
+    .compactOptions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin:8px 0 0;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#f8fbff;
+    }
+
+    .checkboxRow{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .checkboxRow input{
+      width:auto;
+      transform:scale(1.05);
+    }
+
+    .machineGrid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(108px,1fr));
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .machineCard{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:6px;
+      background:linear-gradient(180deg,#fff 0%, #f7faff 100%);
+      cursor:pointer;
+      transition:.15s ease;
+      min-height:112px;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      justify-content:space-between;
+    }
+
+    .machineCard:hover{transform:translateY(-1px)}
+    .machineCard.selected{
+      border:2px solid var(--primary);
+      background:linear-gradient(180deg,#f9fbff 0%, #eaf1ff 100%);
+      box-shadow:0 8px 18px rgba(41,87,211,.12);
+    }
+
+    .machineVisual{
+      height:50px;
+      border-radius:10px;
+      background:#fff;
+      border:1px solid #dbe6f8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    .machineVisual img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      background:#fff;
+    }
+
+    .machineName{
+      font-size:12px;
+      font-weight:900;
+      text-align:center;
+      line-height:1.05;
+      min-height:26px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .machineTag{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:max-content;
+      align-self:center;
+      padding:3px 7px;
+      border-radius:999px;
+      background:#edf4ff;
+      color:#2750c5;
+      border:1px solid #d4e0ff;
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .questionGrid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .questionHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px;
+      flex-wrap:wrap;
+    }
+
+    .challengeLayout{
+      display:grid;
+      grid-template-columns:22% 46% 32%;
+      gap:10px;
+      align-items:start;
+    }
+
+    .cardLandscape{min-height:72vh}
+
+    .personButtons{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(92px,1fr));
+      gap:8px;
+      align-items:start;
+    }
+
+    .personBtn{
+      width:100%;
+      aspect-ratio:1 / 1;
+      text-align:center;
+      border:2px solid transparent;
+      color:#fff;
+      border-radius:14px;
+      padding:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:15px;
+      font-weight:900;
+      line-height:1.1;
+      box-shadow:0 6px 14px rgba(0,0,0,.10);
+    }
+
+    .personBtn.active{
+      border-color:#111827;
+      box-shadow:0 0 0 3px rgba(17,24,39,.10);
+    }
+
+    .personBtn.individual{
+      background:linear-gradient(135deg,#64748b,#475569);
+    }
+
+    .empty{
+      padding:14px;
+      border-radius:12px;
+      border:1px dashed #ccd8ea;
+      background:#fafcff;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .selectionTitle{
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:5px;
+    }
+
+    .calcBox{
+      padding:10px;
+      border-radius:14px;
+      background:#f7faff;
+      border:1px solid var(--line);
+    }
+
+    .bigCalc{
+      font-size:30px;
+      font-weight:900;
+      margin-top:4px;
+      line-height:1;
+    }
+
+    .animalProgress{
+      margin-top:10px;
+      padding:10px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#ffffff 0%, #f3f8ff 100%);
+      border:1px solid var(--line);
+    }
+
+    .animalHead{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .animalValue{
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .progress{
+      height:12px;
+      border-radius:999px;
+      overflow:hidden;
+      background:#edf2f8;
+      border:1px solid #dbe4ef;
+    }
+
+    .progress > div{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#3b82f6);
+    }
+
+    .history{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      max-height:22vh;
+      overflow:auto;
+      margin-top:8px;
+    }
+
+    .historyItem{
+      border:1px solid var(--line);
+      background:#fbfdff;
+      border-radius:10px;
+      padding:7px 9px;
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .ranking{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      max-height:52vh;
+      overflow:auto;
+      padding-right:3px;
+      margin-top:6px;
+    }
+
+    .rankItem{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:8px;
+    }
+
+    .rankTop{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      font-weight:900;
+      margin-bottom:5px;
+      font-size:13px;
+    }
+
+    .statsTable{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+      margin-top:8px;
+    }
+
+    .statsTable th,
+    .statsTable td{
+      padding:7px 5px;
+      border-bottom:1px solid #e5edf7;
+      text-align:left;
+      vertical-align:top;
+    }
+
+    .statsTable th{
+      font-size:10px;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .challengeMachineGrid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(102px,1fr));
+      gap:6px;
+      margin-top:6px;
+    }
+
+    .challengeMachineCard{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:6px;
+      background:#fff;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .challengeMachineCard.active{
+      border:2px solid var(--primary);
+      background:#eef4ff;
+      box-shadow:0 6px 16px rgba(41,87,211,.12);
+    }
+
+    .challengeMachineThumb{
+      height:58px;
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid #d9e4f4;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .challengeMachineThumb img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+
+    .quizBox{
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fffdf7;
+      padding:10px;
+    }
+
+    .answerGrid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .answerBtn{
+      text-align:left;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius:10px;
+      padding:10px 12px;
+    }
+
+    .signature{
+      position:fixed;
+      right:16px;
+      bottom:10px;
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(203,213,225,.8);
+      backdrop-filter:blur(8px);
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:12px;
+      font-weight:900;
+      color:#475569;
+      z-index:20;
+    }
+
+    @media (max-width:1120px){
+      .prepareGrid{grid-template-columns:1fr}
+      .questionGrid{grid-template-columns:1fr}
+      .challengeLayout{grid-template-columns:1fr}
+      .cardLandscape{min-height:auto}
+      .ranking,.history{max-height:none}
+      .personButtons{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
+    }
+
+    @media (max-width:760px){
+      .logoBox{width:64px;height:64px}
+      .homeButtons button,.nav button{flex:1 1 160px}
+      .signature{position:static;display:inline-block;margin-top:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="logoBox">
+          <img src="Logo N'EPS.jpeg" alt="Logo N'EPS">
+        </div>
+        <div>
+          <h1>Hippopogramme</h1>
+        </div>
+      </div>
+    </header>
+
+    <nav class="nav">
+      <button class="navBtn active primary" id="navHome">Interface</button>
+      <button class="navBtn" id="navPrepare">Préparer le challenge</button>
+      <button class="navBtn" id="navChallenge">Faire le challenge</button>
+      <button class="danger" id="resetBtn">Réinitialiser les données</button>
+    </nav>
+
+    <section class="page active" id="pageHome">
+      <div class="homeButtons">
+        <button class="primary" id="goPrepare">Préparer le challenge</button>
+        <button class="secondary" id="goChallenge">Faire le challenge</button>
+        <button class="danger" id="resetBtnHome">Réinitialiser les données</button>
+      </div>
+
+      <div class="card" style="margin-top:8px;">
+        <h3 class="cardTitle">Échelle des mammifères</h3>
+        <div class="animalScaleCompact" id="animalScale"></div>
+      </div>
+    </section>
+
+    <section class="page" id="pagePrepare">
+      <div class="grid">
+        <div class="card span-12">
+          <h3 class="cardTitle">Préparer le Challenge</h3>
+
+          <div class="toggle">
+            <button id="btnModeIndividual" class="selected" type="button">Challenge individuel</button>
+            <button id="btnModeTeam" type="button">Challenge collectif</button>
+          </div>
+
+          <div class="prepareGrid">
+            <div class="prepareSubCard">
+              <div id="blockIndividual">
+                <div class="listBox" id="individualList"></div>
+                <div class="row" style="margin-top:6px;">
+                  <button class="ghost" id="addIndividualBtn" type="button">+ Ajouter un élève</button>
+                </div>
+              </div>
+
+              <div id="blockTeams" style="display:none;">
+                <div class="row" style="margin-bottom:6px;">
+                  <div class="field" style="max-width:180px;">
+                    <label>Nombre d’équipes</label>
+                    <input type="number" id="teamCount" min="1" max="12" value="2">
+                  </div>
+                  <div class="field" style="max-width:180px;">
+                    <label>&nbsp;</label>
+                    <button class="secondary" id="generateTeams" type="button">Générer</button>
+                  </div>
+                  <div class="field" style="max-width:180px;">
+                    <label>&nbsp;</label>
+                    <button class="ghost" id="addTeamBtn" type="button">+ Ajouter équipe</button>
+                  </div>
+                </div>
+
+                <div class="compactOptions">
+                  <label class="checkboxRow">
+                    <input type="checkbox" id="balanceTeamsCheckbox">
+                    Équilibrer le challenge en coefficientant les charges
+                  </label>
+                  <div class="smallText" id="balanceInfo">Rééquilibrage inactif.</div>
+                </div>
+
+                <div class="listBox" id="teamList"></div>
+              </div>
+
+              <div class="compactOptions" style="margin-top:10px;">
+                <label class="checkboxRow">
+                  <input type="checkbox" id="securityQuestionsCheckbox">
+                  Question sur les paramètres de sécurité des machines
+                </label>
+                <div class="smallText">Si erreur, performance minorée de 50 %.</div>
+              </div>
+            </div>
+
+            <div class="prepareSubCard">
+              <h4 style="margin:0 0 6px;font-size:14px;font-weight:900;">Machines</h4>
+              <div class="machineGrid" id="machineGrid"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card span-12">
+          <h3 class="cardTitle">Préparation des questions de sécurité</h3>
+          <div class="smallText">3 questions par machine : une bonne réponse et deux mauvaises.</div>
+          <div id="questionsEditor" style="margin-top:8px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="pageChallenge">
+      <div class="challengeLayout">
+        <div class="participantsCol card cardLandscape">
+          <h3 class="cardTitle">Participants</h3>
+          <div class="personButtons" id="personButtons"></div>
+        </div>
+
+        <div class="centerCol card cardLandscape">
+          <h3 class="cardTitle">Saisie du résultat</h3>
+
+          <div class="empty" id="emptySelection">Sélectionner un élève pour commencer.</div>
+
+          <div id="entrySection" style="display:none;">
+            <div class="selectionTitle" id="selectedName"></div>
+            <div class="smallText" id="selectedMeta" style="margin-bottom:8px;"></div>
+
+            <div>
+              <div class="smallText" style="margin-bottom:5px;font-weight:800;">Choisir la machine</div>
+              <div class="challengeMachineGrid" id="challengeMachineGrid"></div>
+            </div>
+
+            <div class="row" style="margin-top:8px;">
+              <div class="field">
+                <label>Nombre de répétitions</label>
+                <input type="number" id="entryReps" min="1" step="1" value="10">
+              </div>
+              <div class="field">
+                <label>Charge soulevée (kg)</label>
+                <input type="number" id="entryLoad" min="0" step="0.5" value="20">
+              </div>
+            </div>
+
+            <div class="calcBox">
+              <div class="smallText">Calcul automatique</div>
+              <div class="bigCalc" id="entryTotal">200 kg</div>
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+              <button class="primary" id="saveResult" type="button">Ajouter la performance</button>
+              <button class="warning" id="undoLastAction" type="button">Supprimer la dernière action saisie</button>
+              <button class="ghost" id="cancelSelection" type="button">Annuler la sélection</button>
+            </div>
+
+            <div id="quizContainer" style="display:none;"></div>
+
+            <div class="animalProgress">
+              <div class="animalHead">
+                <div>
+                  <div class="smallText">Animal atteint</div>
+                  <div class="animalValue" id="currentAnimal">🐈 Chat</div>
+                </div>
+                <div style="text-align:right;">
+                  <div class="smallText">Prochain objectif</div>
+                  <div style="font-size:16px;font-weight:900;" id="nextAnimal">🐕 Chien</div>
+                </div>
+              </div>
+              <div class="progress"><div id="studentProgressBar"></div></div>
+              <div class="smallText" id="studentProgressText" style="margin-top:6px;"></div>
+            </div>
+
+            <div style="margin-top:10px;">
+              <div class="smallText">Historique de l’élève</div>
+              <div class="history" id="personHistory"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rankCol card cardLandscape">
+          <h3 class="cardTitle">Classement en direct</h3>
+          <div class="ranking" id="ranking"></div>
+          <div class="row" style="margin-top:10px;">
+            <button class="success" id="exportPng" type="button">Mémoriser les résultats</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:10px;">
+        <div class="card span-12">
+          <h3 class="cardTitle">Statistiques détaillées</h3>
+          <div style="overflow:auto;">
+            <table class="statsTable" id="statsTable">
+              <thead>
+                <tr>
+                  <th>Équipe</th>
+                  <th>Élève</th>
+                  <th>Total</th>
+                  <th>Animal</th>
+                  <th>Nb saisies</th>
+                  <th>Machines réalisées</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="signature">By Quentin Delisle</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "hippopogramme_v8_pwa";
+
+    const animals = [
+      { name:"Lapin", weight:2, icon:"🐇" },
+      { name:"Chat", weight:4, icon:"🐈" },
+      { name:"Renard", weight:7, icon:"🦊" },
+      { name:"Chien", weight:20, icon:"🐕" },
+      { name:"Loup", weight:40, icon:"🐺" },
+      { name:"Mouton", weight:80, icon:"🐑" },
+      { name:"Panda", weight:100, icon:"🐼" },
+      { name:"Sanglier", weight:120, icon:"🐗" },
+      { name:"Gorille", weight:160, icon:"🦍" },
+      { name:"Cerf", weight:180, icon:"🦌" },
+      { name:"Lion", weight:190, icon:"🦁" },
+      { name:"Zèbre", weight:320, icon:"🦓" },
+      { name:"Cheval", weight:500, icon:"🐎" },
+      { name:"Bison", weight:700, icon:"🦬" },
+      { name:"Rhinocéros", weight:2300, icon:"🦏" },
+      { name:"Hippopotame", weight:3000, icon:"🦛" },
+      { name:"Éléphant", weight:6000, icon:"🐘" },
+      { name:"2 éléphants", weight:12000, icon:"🐘🐘" },
+      { name:"3 éléphants", weight:18000, icon:"🐘×3" },
+      { name:"4 éléphants", weight:24000, icon:"🐘×4" },
+      { name:"5 éléphants", weight:30000, icon:"🐘×5" },
+      { name:"6 éléphants", weight:36000, icon:"🐘×6" },
+      { name:"7 éléphants", weight:42000, icon:"🐘×7" },
+      { name:"8 éléphants", weight:48000, icon:"🐘×8" },
+      { name:"9 éléphants", weight:54000, icon:"🐘×9" },
+      { name:"10 éléphants", weight:60000, icon:"🐘×10" },
+      { name:"Baleine bleue", weight:120000, icon:"🐋" }
+    ].sort((a,b)=>a.weight-b.weight);
+
+    const machineCatalog = [
+      { id:"velo", name:"Vélo", tag:"Cardio", files:["machines/Vélo.png"] },
+      { id:"deltoides", name:"Deltoïdes", tag:"Épaules", files:["machines/deltoïdes.png"] },
+      { id:"dc", name:"Développé couché", tag:"Pectoraux", files:["machines/Développé Couché.png"] },
+      { id:"dorso", name:"Dorso lombaire", tag:"Dos", files:["machines/Dorso Lombaire.png"] },
+      { id:"ischios", name:"Ischios", tag:"Jambes", files:["machines/ischios.png"] },
+      { id:"legcurl", name:"Leg Curl", tag:"Jambes", files:["machines/Leg Curl.png"] },
+      { id:"pompes", name:"Pompes", tag:"Poids du corps", files:["machines/Pompes.png"] },
+      { id:"presse", name:"Presse oblique", tag:"Jambes", files:["machines/Presse Oblique.png"] },
+      { id:"rowing", name:"Rowing", tag:"Dos", files:["machines/Rowing.png"] },
+      { id:"shoulder", name:"Shoulder Press", tag:"Épaules", files:["machines/Shoulder Press.png"] },
+      { id:"tapis", name:"Tapis de course", tag:"Cardio", files:["machines/Tapis de course.png"] },
+      { id:"tirage_assis", name:"Tirage assis", tag:"Dos", files:["machines/Tirage Assis.png"] },
+      { id:"tirage_nuque", name:"Tirage nuque", tag:"Dos", files:["machines/Tirage Nuque.png"] },
+      { id:"tractions", name:"Tractions", tag:"Poids du corps", files:["machines/Tractions.png"] }
+    ];
+
+    let state = loadState();
+    let selectedPersonId = null;
+    let selectedMachineId = null;
+    let typingTimer = null;
+    let pendingResult = null;
+    const el = {};
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    function init(){
+      cache();
+      ensureQuestionsStructure();
+      bind();
+      renderAnimals();
+      renderAll();
+      registerServiceWorker();
+    }
+
+    function cache(){
+      [
+        "pageHome","pagePrepare","pageChallenge",
+        "navHome","navPrepare","navChallenge","resetBtn","resetBtnHome",
+        "goPrepare","goChallenge",
+        "btnModeIndividual","btnModeTeam",
+        "blockIndividual","blockTeams",
+        "teamCount","generateTeams","teamList",
+        "machineGrid",
+        "personButtons",
+        "emptySelection","entrySection","selectedName","selectedMeta",
+        "entryReps","entryLoad","entryTotal",
+        "saveResult","cancelSelection","undoLastAction",
+        "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
+        "personHistory","ranking","statsTable","exportPng",
+        "challengeMachineGrid","individualList","addIndividualBtn","addTeamBtn",
+        "balanceTeamsCheckbox","balanceInfo","securityQuestionsCheckbox",
+        "questionsEditor","quizContainer"
+      ].forEach(id => el[id] = document.getElementById(id));
+    }
+
+    function bind(){
+      el.navHome.addEventListener("click", ()=>showPage("home"));
+      el.navPrepare.addEventListener("click", ()=>showPage("prepare"));
+      el.navChallenge.addEventListener("click", ()=>showPage("challenge"));
+      el.goPrepare.addEventListener("click", ()=>showPage("prepare"));
+      el.goChallenge.addEventListener("click", ()=>showPage("challenge"));
+
+      el.resetBtn.addEventListener("click", resetAll);
+      el.resetBtnHome.addEventListener("click", resetAll);
+
+      el.btnModeIndividual.addEventListener("click", ()=>{
+        state.mode = "individual";
+        selectedPersonId = null;
+        saveState();
+        renderAll();
+      });
+
+      el.btnModeTeam.addEventListener("click", ()=>{
+        state.mode = "team";
+        if(!state.teams.length){
+          state.teams = [
+            makeTeam(1,"Équipe 1","#3b82f6",3),
+            makeTeam(2,"Équipe 2","#ef4444",3)
+          ];
+        }
+        selectedPersonId = null;
+        saveState();
+        renderAll();
+      });
+
+      el.generateTeams.addEventListener("click", ()=>{
+        const count = clamp(parseInt(el.teamCount.value || "2", 10),1,12);
+        const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#14b8a6","#84cc16","#f97316","#64748b","#06b6d4","#e11d48"];
+        state.teams = Array.from({length:count}, (_,i)=>makeTeam(i+1,"Équipe "+(i+1),palette[i%palette.length],3));
+        selectedPersonId = null;
+        saveState();
+        renderAll();
+      });
+
+      el.addIndividualBtn.addEventListener("click", ()=>{
+        state.individuals.push({id:"ind_"+uid(), name:"Nouvel élève", results:[]});
+        saveState();
+        renderAll();
+      });
+
+      el.addTeamBtn.addEventListener("click", ()=>{
+        state.teams.push(makeTeam(state.teams.length+1, "Nouvelle équipe", "#3b82f6", 3));
+        saveState();
+        renderAll();
+      });
+
+      el.balanceTeamsCheckbox.addEventListener("change", ()=>{
+        state.balanceTeams = !!el.balanceTeamsCheckbox.checked;
+        saveState();
+        renderRanking();
+        updateBalanceInfo();
+      });
+
+      el.securityQuestionsCheckbox.addEventListener("change", ()=>{
+        state.securityQuestionsEnabled = !!el.securityQuestionsCheckbox.checked;
+        saveState();
+      });
+
+      el.machineGrid.addEventListener("click", (e)=>{
+        const card = e.target.closest(".machineCard");
+        if(!card) return;
+        const id = card.dataset.id;
+        if(state.selectedMachines.includes(id)){
+          state.selectedMachines = state.selectedMachines.filter(x=>x!==id);
+        }else{
+          state.selectedMachines.push(id);
+        }
+        saveState();
+        renderMachines();
+        renderQuestionsEditor();
+        renderEntry();
+      });
+
+      el.personButtons.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".personBtn");
+        if(!btn) return;
+        selectedPersonId = btn.dataset.id;
+        renderPeople();
+        renderEntry();
+      });
+
+      el.challengeMachineGrid.addEventListener("click", (e)=>{
+        const card = e.target.closest(".challengeMachineCard");
+        if(!card) return;
+        selectedMachineId = card.dataset.id;
+        renderChallengeMachinePicker();
+      });
+
+      const updateCalc = ()=>{
+        const reps = parseFloat(el.entryReps.value || "0");
+        const load = parseFloat(el.entryLoad.value || "0");
+        el.entryTotal.textContent = formatKg(reps * load);
+      };
+
+      el.entryReps.addEventListener("input", updateCalc);
+      el.entryLoad.addEventListener("input", updateCalc);
+
+      el.saveResult.addEventListener("click", ()=>{
+        if(!selectedPersonId) return;
+        const person = findPerson(selectedPersonId);
+        if(!person) return;
+
+        const machineId = selectedMachineId;
+        const reps = Math.max(0, parseFloat(el.entryReps.value || "0"));
+        const load = Math.max(0, parseFloat(el.entryLoad.value || "0"));
+        const total = reps * load;
+
+        if(!machineId){
+          alert("Choisir une machine en cliquant sur sa miniature.");
+          return;
+        }
+        if(reps <= 0){
+          alert("Indiquer un nombre de répétitions supérieur à 0.");
+          return;
+        }
+
+        const baseResult = {
+          id:uid(),
+          date:new Date().toLocaleString("fr-FR"),
+          machineId,
+          machineName:getMachine(machineId)?.name || machineId,
+          reps,
+          load,
+          total,
+          securityApplied:false,
+          securityCorrect:null,
+          totalBeforePenalty:total
+        };
+
+        if(state.securityQuestionsEnabled){
+          pendingResult = {
+            personId: selectedPersonId,
+            result: baseResult
+          };
+          showSecurityQuestion(machineId);
+        } else {
+          person.results.push(baseResult);
+          saveState();
+          renderAll();
+        }
+      });
+
+      el.undoLastAction.addEventListener("click", ()=>{
+        if(!selectedPersonId) return;
+        const person = findPerson(selectedPersonId);
+        if(!person || !person.results.length){
+          alert("Aucune action à supprimer pour cet élève.");
+          return;
+        }
+        person.results.pop();
+        saveState();
+        renderAll();
+      });
+
+      el.cancelSelection.addEventListener("click", ()=>{
+        selectedPersonId = null;
+        selectedMachineId = null;
+        pendingResult = null;
+        hideQuiz();
+        renderAll();
+      });
+
+      el.exportPng.addEventListener("click", exportResultsAsPng);
+    }
+
+    function resetAll(){
+      if(!confirm("Réinitialiser toutes les données ?")) return;
+      state = defaultState();
+      ensureQuestionsStructure();
+      selectedPersonId = null;
+      selectedMachineId = null;
+      pendingResult = null;
+      saveState();
+      renderAll();
+      showPage("home");
+    }
+
+    function defaultQuestionSet(machineName){
+      return [
+        {
+          question:`Quel réglage de sécurité dois-tu vérifier avant d'utiliser ${machineName} ?`,
+          correct:"La stabilité du poste et le réglage adapté à ma morphologie",
+          wrong1:"La couleur de la machine",
+          wrong2:"Le nombre d'élèves dans la salle"
+        },
+        {
+          question:`Quel comportement moteur est prioritaire sur ${machineName} ?`,
+          correct:"Garder une posture contrôlée et un placement stable",
+          wrong1:"Aller le plus vite possible sans contrôle",
+          wrong2:"Bloquer la respiration pendant tout l'effort"
+        },
+        {
+          question:`Avant de finir la série sur ${machineName}, que faut-il faire ?`,
+          correct:"Reposer ou accompagner la charge en sécurité",
+          wrong1:"Lâcher la charge dès que la série est terminée",
+          wrong2:"Tourner le dos à la machine pendant le mouvement"
+        }
+      ];
+    }
+
+    function defaultState(){
+      return {
+        mode:"individual",
+        balanceTeams:false,
+        securityQuestionsEnabled:false,
+        individuals:[
+          {id:"ind_1_"+uid(), name:"Élève 1", results:[]},
+          {id:"ind_2_"+uid(), name:"Élève 2", results:[]},
+          {id:"ind_3_"+uid(), name:"Élève 3", results:[]}
+        ],
+        teams:[
+          makeTeam(1,"Équipe 1","#3b82f6",3),
+          makeTeam(2,"Équipe 2","#ef4444",3)
+        ],
+        selectedMachines:["presse","dc","rowing","velo","tapis","pompes","deltoides"],
+        machineQuestions:{}
+      };
+    }
+
+    function makeTeam(index,name,color,count){
+      return {
+        id:"team_"+index+"_"+uid(),
+        name,
+        color,
+        students:Array.from({length:count}, (_,i)=>({
+          id:"team_"+index+"_student_"+(i+1)+"_"+uid(),
+          name:"Élève "+(i+1),
+          results:[]
+        }))
+      };
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return defaultState();
+        const s = JSON.parse(raw);
+        return normalizeState(s);
+      }catch(e){
+        return defaultState();
+      }
+    }
+
+    function normalizeState(s){
+      const d = defaultState();
+      return {
+        mode: s?.mode === "team" ? "team" : "individual",
+        balanceTeams: !!s?.balanceTeams,
+        securityQuestionsEnabled: !!s?.securityQuestionsEnabled,
+        individuals: Array.isArray(s?.individuals) ? s.individuals.map(p=>({
+          id:p.id || uid(),
+          name:p.name || "Élève",
+          results:Array.isArray(p.results) ? p.results : []
+        })) : d.individuals,
+        teams: Array.isArray(s?.teams) ? s.teams.map((t,ti)=>({
+          id:t.id || uid(),
+          name:t.name || ("Équipe "+(ti+1)),
+          color:t.color || "#3b82f6",
+          students:Array.isArray(t.students) ? t.students.map((p,pi)=>({
+            id:p.id || uid(),
+            name:p.name || ("Élève "+(pi+1)),
+            results:Array.isArray(p.results) ? p.results : []
+          })) : []
+        })) : d.teams,
+        selectedMachines: Array.isArray(s?.selectedMachines) && s.selectedMachines.length ? s.selectedMachines : d.selectedMachines,
+        machineQuestions: s?.machineQuestions && typeof s.machineQuestions === "object" ? s.machineQuestions : {}
+      };
+    }
+
+    function ensureQuestionsStructure(){
+      if(!state.machineQuestions) state.machineQuestions = {};
+      machineCatalog.forEach(machine=>{
+        if(!Array.isArray(state.machineQuestions[machine.id]) || state.machineQuestions[machine.id].length !== 3){
+          state.machineQuestions[machine.id] = defaultQuestionSet(machine.name);
+        } else {
+          state.machineQuestions[machine.id] = state.machineQuestions[machine.id].map((q, idx)=>({
+            question: q?.question || defaultQuestionSet(machine.name)[idx].question,
+            correct: q?.correct || defaultQuestionSet(machine.name)[idx].correct,
+            wrong1: q?.wrong1 || defaultQuestionSet(machine.name)[idx].wrong1,
+            wrong2: q?.wrong2 || defaultQuestionSet(machine.name)[idx].wrong2
+          }));
+        }
+      });
+    }
+
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function delayedSave(){
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(()=>saveState(), 250);
+    }
+
+    function renderAll(){
+      renderAnimals();
+      renderPrepareMode();
+      renderIndividuals();
+      renderTeams();
+      renderMachines();
+      renderQuestionsEditor();
+      renderPeople();
+      renderEntry();
+      renderRanking();
+      renderStatsTable();
+      updateBalanceInfo();
+      saveState();
+    }
+
+    function renderAnimals(){
+      document.getElementById("animalScale").innerHTML = animals.map(a=>`
+        <div class="animalItem">
+          <strong>${a.icon} ${a.name}</strong>
+          <div class="muted">${formatKg(a.weight)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderPrepareMode(){
+      const individual = state.mode === "individual";
+      el.btnModeIndividual.classList.toggle("selected", individual);
+      el.btnModeTeam.classList.toggle("selected", !individual);
+      el.blockIndividual.style.display = individual ? "block" : "none";
+      el.blockTeams.style.display = individual ? "none" : "block";
+      el.teamCount.value = state.teams.length || 2;
+      el.balanceTeamsCheckbox.checked = !!state.balanceTeams;
+      el.securityQuestionsCheckbox.checked = !!state.securityQuestionsEnabled;
+    }
+
+    function renderIndividuals(){
+      if(state.mode !== "individual") return;
+
+      el.individualList.innerHTML = state.individuals.map(person=>`
+        <div class="studentBox">
+          <div class="studentRow">
+            <input value="${esc(person.name)}" data-person-id="${person.id}" class="indName">
+            <button class="danger small" type="button" data-remove-ind="${person.id}">Supprimer</button>
+          </div>
+        </div>
+      `).join("");
+
+      el.individualList.querySelectorAll(".indName").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          const p = state.individuals.find(x=>x.id===inp.dataset.personId);
+          if(p){
+            p.name = inp.value;
+            delayedSave();
+          }
+        });
+        inp.addEventListener("blur", ()=>{
+          renderPeople();
+          renderStatsTable();
+        });
+      });
+
+      el.individualList.querySelectorAll("[data-remove-ind]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          state.individuals = state.individuals.filter(p=>p.id !== btn.dataset.removeInd);
+          if(selectedPersonId === btn.dataset.removeInd) selectedPersonId = null;
+          saveState();
+          renderAll();
+        });
+      });
+    }
+
+    function renderTeams(){
+      if(state.mode !== "team") return;
+
+      el.teamList.innerHTML = state.teams.map(team=>`
+        <div class="teamBox">
+          <div class="teamHeader">
+            <div class="row" style="flex:1;">
+              <div class="field" style="min-width:150px;">
+                <label>Nom équipe</label>
+                <input value="${esc(team.name)}" data-team-name="${team.id}">
+              </div>
+              <div class="field" style="max-width:90px;">
+                <label>Couleur</label>
+                <input type="color" value="${team.color}" data-team-color="${team.id}">
+              </div>
+            </div>
+            <button class="danger small" type="button" data-remove-team="${team.id}">Supprimer</button>
+          </div>
+
+          <div class="smallText" style="margin-bottom:6px;">
+            <span class="colorDot" style="background:${team.color};"></span>${team.name}
+          </div>
+
+          <div class="listBox">
+            ${team.students.map(student=>`
+              <div class="studentRow">
+                <input value="${esc(student.name)}" data-team-student="${team.id}__${student.id}">
+                <button class="danger small" type="button" data-remove-student="${team.id}__${student.id}">Supprimer</button>
+              </div>
+            `).join("")}
+            <button class="ghost small" type="button" data-add-student="${team.id}">+ Ajouter un élève</button>
+          </div>
+        </div>
+      `).join("");
+
+      el.teamList.querySelectorAll("[data-team-name]").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          const t = state.teams.find(x=>x.id===inp.dataset.teamName);
+          if(t){
+            t.name = inp.value;
+            delayedSave();
+          }
+        });
+        inp.addEventListener("blur", ()=>{
+          renderPeople();
+          renderRanking();
+          renderStatsTable();
+        });
+      });
+
+      el.teamList.querySelectorAll("[data-team-color]").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          const t = state.teams.find(x=>x.id===inp.dataset.teamColor);
+          if(t){
+            t.color = inp.value;
+            saveState();
+            renderPeople();
+            renderRanking();
+            renderStatsTable();
+          }
+        });
+      });
+
+      el.teamList.querySelectorAll("[data-team-student]").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          const [teamId, studentId] = inp.dataset.teamStudent.split("__");
+          const team = state.teams.find(t=>t.id===teamId);
+          const student = team?.students.find(s=>s.id===studentId);
+          if(student){
+            student.name = inp.value;
+            delayedSave();
+          }
+        });
+        inp.addEventListener("blur", ()=>{
+          renderPeople();
+          renderStatsTable();
+        });
+      });
+
+      el.teamList.querySelectorAll("[data-remove-team]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          state.teams = state.teams.filter(t=>t.id !== btn.dataset.removeTeam);
+          saveState();
+          renderAll();
+        });
+      });
+
+      el.teamList.querySelectorAll("[data-add-student]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const t = state.teams.find(x=>x.id===btn.dataset.addStudent);
+          if(!t) return;
+          t.students.push({id:"st_"+uid(), name:"Élève "+(t.students.length+1), results:[]});
+          saveState();
+          renderAll();
+        });
+      });
+
+      el.teamList.querySelectorAll("[data-remove-student]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const [teamId, studentId] = btn.dataset.removeStudent.split("__");
+          const team = state.teams.find(t=>t.id===teamId);
+          if(!team) return;
+          team.students = team.students.filter(s=>s.id !== studentId);
+          if(selectedPersonId === studentId) selectedPersonId = null;
+          saveState();
+          renderAll();
+        });
+      });
+    }
+
+    function renderQuestionsEditor(){
+      const machines = machineCatalog.filter(m=>state.selectedMachines.includes(m.id));
+      if(!machines.length){
+        el.questionsEditor.innerHTML = `<div class="empty">Sélectionner au moins une machine pour préparer des questions.</div>`;
+        return;
+      }
+
+      el.questionsEditor.innerHTML = machines.map(machine=>{
+        const qs = state.machineQuestions[machine.id] || defaultQuestionSet(machine.name);
+        return `
+          <div class="questionBox" style="margin-bottom:10px;">
+            <div class="questionHeader">
+              <div style="font-weight:900;">${machine.name}</div>
+              <div class="smallText">3 questions</div>
+            </div>
+            <div class="questionGrid">
+              ${qs.map((q, idx)=>`
+                <div class="questionBox" style="background:#fbfdff;">
+                  <div class="field">
+                    <label>Question ${idx+1}</label>
+                    <textarea data-q-field="${machine.id}__${idx}__question">${esc(q.question)}</textarea>
+                  </div>
+                  <div class="field">
+                    <label>Bonne réponse</label>
+                    <input data-q-field="${machine.id}__${idx}__correct" value="${esc(q.correct)}">
+                  </div>
+                  <div class="field">
+                    <label>Réponse fausse 1</label>
+                    <input data-q-field="${machine.id}__${idx}__wrong1" value="${esc(q.wrong1)}">
+                  </div>
+                  <div class="field">
+                    <label>Réponse fausse 2</label>
+                    <input data-q-field="${machine.id}__${idx}__wrong2" value="${esc(q.wrong2)}">
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      el.questionsEditor.querySelectorAll("[data-q-field]").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          const [machineId, idx, field] = inp.dataset.qField.split("__");
+          if(!state.machineQuestions[machineId]) state.machineQuestions[machineId] = defaultQuestionSet(getMachine(machineId)?.name || "Machine");
+          state.machineQuestions[machineId][Number(idx)][field] = inp.value;
+          delayedSave();
+        });
+      });
+    }
+
+    function stripAccents(str){
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function unique(arr){
+      return [...new Set(arr.filter(Boolean))];
+    }
+
+    function buildCandidates(files){
+      const out = [];
+      files.forEach(f=>{
+        out.push(f);
+        out.push(stripAccents(f));
+        out.push(f.replaceAll(" ","_"));
+        out.push(stripAccents(f).replaceAll(" ","_"));
+        out.push(f.toLowerCase());
+        out.push(stripAccents(f).toLowerCase());
+        out.push(f.replaceAll(" ","-"));
+        out.push(stripAccents(f).replaceAll(" ","-"));
+        out.push(f.replaceAll("_"," "));
+        out.push(stripAccents(f.replaceAll("_"," ")));
+      });
+      return unique(out);
+    }
+
+    function resolveImgTag(machine){
+      const files = buildCandidates(machine.files || []);
+      const first = files[0] || "";
+      const safe = files.map(f=>f.replace(/\\/g,"\\\\").replace(/'/g,"\\'"));
+      const onerrorJs = `
+        (function(img){
+          var list=['${safe.join("','")}'];
+          var i=Number(img.dataset.tryindex||0)+1;
+          if(i<list.length){img.dataset.tryindex=i;img.src=list[i];}
+          else{img.style.display='none';}
+        })(this)
+      `.replace(/\n/g," ");
+      return `<img src="${escapeAttr(first)}" alt="${escapeAttr(machine.name)}" onerror="${onerrorJs}">`;
+    }
+
+    function renderMachines(){
+      el.machineGrid.innerHTML = machineCatalog.map(m=>{
+        const selected = state.selectedMachines.includes(m.id);
+        return `
+          <div class="machineCard ${selected ? "selected" : ""}" data-id="${m.id}">
+            <div class="machineVisual">${resolveImgTag(m)}</div>
+            <div class="machineName">${m.name}</div>
+            <div class="machineTag">${m.tag}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getAllPeople(){
+      if(state.mode === "individual"){
+        return state.individuals.map(p=>({
+          ...p,
+          teamId:null,
+          teamName:"Individuel",
+          teamColor:"#64748b"
+        }));
+      }
+      return state.teams.flatMap(team => team.students.map(student=>({
+        ...student,
+        teamId:team.id,
+        teamName:team.name,
+        teamColor:team.color
+      })));
+    }
+
+    function findPerson(id){
+      if(state.mode === "individual"){
+        return state.individuals.find(p=>p.id===id);
+      }
+      for(const team of state.teams){
+        const p = team.students.find(s=>s.id===id);
+        if(p) return p;
+      }
+      return null;
+    }
+
+    function renderPeople(){
+      const people = getAllPeople();
+      if(!people.length){
+        el.personButtons.innerHTML = `<div class="empty">Aucun participant configuré.</div>`;
+        return;
+      }
+
+      el.personButtons.innerHTML = people.map(p=>{
+        const bg = state.mode === "team" ? p.teamColor : "#64748b";
+        return `
+          <button
+            class="personBtn ${selectedPersonId===p.id ? "active" : ""} ${state.mode==="individual" ? "individual" : ""}"
+            data-id="${p.id}"
+            type="button"
+            style="${state.mode==="team" ? `background:${escapeAttr(bg)};` : ""}"
+          >
+            <span>${escHtml(p.name)}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderEntry(){
+      const selected = selectedPersonId ? getAllPeople().find(p=>p.id===selectedPersonId) : null;
+      const availableMachines = machineCatalog.filter(m => state.selectedMachines.includes(m.id));
+
+      if(!selectedMachineId || !availableMachines.some(m => m.id === selectedMachineId)){
+        selectedMachineId = availableMachines[0]?.id || null;
+      }
+
+      const reps = parseFloat(el.entryReps.value || "0");
+      const load = parseFloat(el.entryLoad.value || "0");
+      el.entryTotal.textContent = formatKg(reps * load);
+
+      if(!selected){
+        el.emptySelection.style.display = "block";
+        el.entrySection.style.display = "none";
+        hideQuiz();
+        return;
+      }
+
+      el.emptySelection.style.display = "none";
+      el.entrySection.style.display = "block";
+
+      const total = getPersonTotal(selected);
+      const current = getCurrentAnimal(total);
+      const next = getNextAnimal(total);
+      const progression = getProgressToNext(total);
+
+      el.selectedName.textContent = selected.name + (state.mode === "team" ? " • " + selected.teamName : "");
+      el.selectedMeta.textContent = `Cumul actuel : ${formatKg(total)}`;
+
+      el.currentAnimal.textContent = `${current.icon} ${current.name}`;
+      el.nextAnimal.textContent = next ? `${next.icon} ${next.name}` : "🏁 Maximum atteint";
+      el.studentProgressBar.style.width = progression.percent + "%";
+      el.studentProgressText.textContent = progression.text;
+
+      renderChallengeMachinePicker();
+
+      const person = findPerson(selected.id);
+      const history = person?.results || [];
+      el.personHistory.innerHTML = history.length
+        ? history.slice().reverse().map(r=>`
+            <div class="historyItem">
+              <strong>${r.machineName}</strong><br>
+              ${r.reps} répétitions × ${r.load} kg = <strong>${formatKg(r.total)}</strong>
+              ${r.securityApplied ? `<br><span class="smallText">Question sécurité : ${r.securityCorrect ? "réussie" : "échouée (-50 %)"}</span>` : ""}
+              <br><span class="smallText">${r.date}</span>
+            </div>
+          `).join("")
+        : `<div class="empty">Aucune performance enregistrée.</div>`;
+    }
+
+    function renderChallengeMachinePicker(){
+      const availableMachines = machineCatalog.filter(m => state.selectedMachines.includes(m.id));
+
+      el.challengeMachineGrid.innerHTML = availableMachines.length
+        ? availableMachines.map(m=>`
+            <div class="challengeMachineCard ${selectedMachineId===m.id ? "active" : ""}" data-id="${m.id}">
+              <div class="challengeMachineThumb">${resolveImgTag(m)}</div>
+              <div class="machineName" style="min-height:auto;font-size:11px;margin-top:5px;">${m.name}</div>
+            </div>
+          `).join("")
+        : `<div class="empty">Aucune machine sélectionnée dans la préparation.</div>`;
+    }
+
+    function showSecurityQuestion(machineId){
+      const questions = state.machineQuestions[machineId] || defaultQuestionSet(getMachine(machineId)?.name || "Machine");
+      const q = questions[Math.floor(Math.random()*questions.length)];
+      const answers = [
+        {text:q.correct, ok:true},
+        {text:q.wrong1, ok:false},
+        {text:q.wrong2, ok:false}
+      ].sort(()=>Math.random()-0.5);
+
+      el.quizContainer.style.display = "block";
+      el.quizContainer.innerHTML = `
+        <div class="quizBox">
+          <div style="font-weight:900;">Question sécurité</div>
+          <div style="margin-top:6px;">${escHtml(q.question)}</div>
+          <div class="answerGrid">
+            ${answers.map((a, idx)=>`
+              <button type="button" class="answerBtn" data-answer-index="${idx}" data-answer-ok="${a.ok ? "1" : "0"}">${escHtml(a.text)}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+
+      el.quizContainer.querySelectorAll(".answerBtn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const ok = btn.dataset.answerOk === "1";
+          applyPendingResult(ok);
+        });
+      });
+    }
+
+    function hideQuiz(){
+      el.quizContainer.style.display = "none";
+      el.quizContainer.innerHTML = "";
+      pendingResult = null;
+    }
+
+    function applyPendingResult(correct){
+      if(!pendingResult) return;
+      const person = findPerson(pendingResult.personId);
+      if(!person) return;
+
+      const result = {...pendingResult.result};
+      result.securityApplied = true;
+      result.securityCorrect = correct;
+
+      if(!correct){
+        result.total = result.total * 0.5;
+      }
+
+      person.results.push(result);
+      pendingResult = null;
+      hideQuiz();
+      saveState();
+      renderAll();
+    }
+
+    function getTeamRawTotal(team){
+      return team.students.reduce((sum,s)=>sum + getPersonTotal(s), 0);
+    }
+
+    function getTeamBalancedTotal(team){
+      const raw = getTeamRawTotal(team);
+      if(!state.balanceTeams) return raw;
+      const size = Math.max(1, team.students.length);
+      const maxSize = Math.max(...state.teams.map(t=>Math.max(1, t.students.length)));
+      return raw * (maxSize / size);
+    }
+
+    function getTeamBalanceCoeff(team){
+      if(!state.balanceTeams) return 1;
+      const size = Math.max(1, team.students.length);
+      const maxSize = Math.max(...state.teams.map(t=>Math.max(1, t.students.length)));
+      return maxSize / size;
+    }
+
+    function updateBalanceInfo(){
+      if(state.mode !== "team"){
+        el.balanceInfo.textContent = "Rééquilibrage disponible en collectif.";
+        return;
+      }
+      if(!state.balanceTeams){
+        el.balanceInfo.textContent = "Rééquilibrage inactif.";
+        return;
+      }
+      const maxSize = Math.max(...state.teams.map(t=>Math.max(1,t.students.length)));
+      el.balanceInfo.textContent = `Référence : ${maxSize} élève(s).`;
+    }
+
+    function renderRanking(){
+      let items = [];
+
+      if(state.mode === "individual"){
+        items = getAllPeople().map(p=>{
+          const total = getPersonTotal(p);
+          return {
+            name:p.name,
+            total,
+            color:"#64748b",
+            animal:getCurrentAnimal(total),
+            label:formatKg(total)
+          };
+        }).sort((a,b)=>b.total-a.total);
+      } else {
+        items = state.teams.map(team=>{
+          const raw = getTeamRawTotal(team);
+          const total = getTeamBalancedTotal(team);
+          const coeff = getTeamBalanceCoeff(team);
+          return {
+            name:team.name,
+            total,
+            raw,
+            coeff,
+            color:team.color,
+            animal:getCurrentAnimal(total),
+            label:formatKg(total),
+            sub: state.balanceTeams && coeff !== 1 ? `brut ${formatKg(raw)} × ${coeff.toFixed(2)}` : ""
+          };
+        }).sort((a,b)=>b.total-a.total);
+      }
+
+      const max = Math.max(1, ...items.map(i=>i.total));
+      el.ranking.innerHTML = items.length ? items.map((item, idx)=>`
+        <div class="rankItem">
+          <div class="rankTop">
+            <div>${state.mode==="team" ? `<span class="colorDot" style="background:${item.color};"></span>` : ""}#${idx+1} • ${item.name}</div>
+            <div>${item.label}</div>
+          </div>
+          <div class="smallText" style="margin-bottom:5px;">${item.animal.icon} ${item.animal.name}${item.sub ? " • " + item.sub : ""}</div>
+          <div class="progress"><div style="width:${Math.min(100,(item.total/max)*100)}%;"></div></div>
+        </div>
+      `).join("") : `<div class="empty">Aucun résultat.</div>`;
+    }
+
+    function renderStatsTable(){
+      const tbody = el.statsTable.querySelector("tbody");
+      const people = getAllPeople().slice().sort((a,b)=>getPersonTotal(b)-getPersonTotal(a));
+
+      tbody.innerHTML = people.length ? people.map(p=>{
+        const total = getPersonTotal(p);
+        const animal = getCurrentAnimal(total);
+        const machineNames = [...new Set((p.results||[]).map(r=>r.machineName))];
+        return `
+          <tr>
+            <td>${state.mode === "team" ? `<span class="colorDot" style="background:${p.teamColor};"></span>${p.teamName}` : "—"}</td>
+            <td>${p.name}</td>
+            <td><strong>${formatKg(total)}</strong></td>
+            <td>${animal.icon} ${animal.name}</td>
+            <td>${(p.results||[]).length}</td>
+            <td>${machineNames.length ? machineNames.join(", ") : "—"}</td>
+          </tr>
+        `;
+      }).join("") : `<tr><td colspan="6"><div class="empty">Aucune donnée enregistrée.</div></td></tr>`;
+    }
+
+    function showPage(name){
+      const pages = {
+        home:el.pageHome,
+        prepare:el.pagePrepare,
+        challenge:el.pageChallenge
+      };
+      Object.values(pages).forEach(p=>p.classList.remove("active"));
+      pages[name].classList.add("active");
+
+      [el.navHome,el.navPrepare,el.navChallenge].forEach(b=>b.classList.remove("active"));
+      if(name==="home") el.navHome.classList.add("active");
+      if(name==="prepare") el.navPrepare.classList.add("active");
+      if(name==="challenge") el.navChallenge.classList.add("active");
+    }
+
+    function getMachine(id){
+      return machineCatalog.find(m=>m.id===id);
+    }
+
+    function getPersonTotal(person){
+      return (person.results || []).reduce((sum,r)=>sum + (Number(r.total)||0), 0);
+    }
+
+    function formatKg(n){
+      return (Math.round((n||0)*10)/10).toLocaleString("fr-FR") + " kg";
+    }
+
+    function getCurrentAnimal(weight){
+      let current = animals[0];
+      for(const a of animals){
+        if(weight >= a.weight) current = a;
+      }
+      return current;
+    }
+
+    function getNextAnimal(weight){
+      for(const a of animals){
+        if(weight < a.weight) return a;
+      }
+      return null;
+    }
+
+    function getProgressToNext(weight){
+      let lower = animals[0];
+      let next = null;
+
+      for(let i=0;i<animals.length;i++){
+        if(weight >= animals[i].weight){
+          lower = animals[i];
+        } else {
+          next = animals[i];
+          break;
+        }
+      }
+
+      if(!next){
+        return { percent:100, text:"Objectif maximal atteint." };
+      }
+
+      const range = next.weight - lower.weight;
+      const done = weight - lower.weight;
+      const percent = range <= 0 ? 100 : Math.max(0, Math.min(100, (done / range) * 100));
+      const remaining = next.weight - weight;
+
+      return {
+        percent,
+        text:`Encore ${formatKg(remaining)} pour atteindre ${next.icon} ${next.name}.`
+      };
+    }
+
+    function esc(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;");
+    }
+
+    function escHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;");
+    }
+
+    function escapeAttr(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;");
+    }
+
+    function clamp(n,min,max){
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function uid(){
+      return Math.random().toString(36).slice(2,10);
+    }
+
+    function exportResultsAsPng(){
+      const target = document.getElementById("pageChallenge");
+      const width = target.scrollWidth;
+      const height = target.scrollHeight;
+
+      const clone = target.cloneNode(true);
+      clone.style.width = width + "px";
+      clone.style.height = height + "px";
+      clone.style.background = "#ffffff";
+
+      const wrapper = document.createElement("div");
+      wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+      wrapper.style.width = width + "px";
+      wrapper.style.height = height + "px";
+      wrapper.style.background = "#ffffff";
+      wrapper.appendChild(clone);
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+          <foreignObject width="100%" height="100%">${new XMLSerializer().serializeToString(wrapper)}</foreignObject>
+        </svg>
+      `;
+
+      const blob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+
+      img.onload = function(){
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0,0,width,height);
+        ctx.drawImage(img,0,0);
+
+        const link = document.createElement("a");
+        link.download = "Hippopogramme_resultats.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        URL.revokeObjectURL(url);
+      };
+
+      img.onerror = function(){
+        URL.revokeObjectURL(url);
+        alert("La capture d'écran n'a pas pu être générée sur ce navigateur.");
+      };
+
+      img.src = url;
+    }
+
+    function registerServiceWorker(){
+      if("serviceWorker" in navigator){
+        window.addEventListener("load", ()=>{
+          navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+        });
+      }
+    }
+  </script>
+</body>
+</html>

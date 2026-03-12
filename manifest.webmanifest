@@ -1,0 +1,22 @@
+{
+  "name": "Hippopogramme",
+  "short_name": "Hippopogramme",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#edf4ff",
+  "theme_color": "#2957d3",
+  "lang": "fr",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
