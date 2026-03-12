@@ -1799,15 +1799,8 @@
 
     function updateBalanceInfo(){
       if(state.mode !== "team"){
-        el.balanceInfo.textContent = "Rééquilibrage disponible en collectif.";
         return;
       }
-      if(!state.balanceTeams){
-        el.balanceInfo.textContent = "Rééquilibrage inactif.";
-        return;
-      }
-      const maxSize = Math.max(...state.teams.map(t=>Math.max(1,t.students.length)));
-      el.balanceInfo.textContent = `Référence : ${maxSize} élève(s).`;
     }
 
     function renderRanking(){
