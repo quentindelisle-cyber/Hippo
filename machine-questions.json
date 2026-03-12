@@ -239,26 +239,6 @@
       "wrong2": "Se lever pendant le retour"
     }
   ],
-  "tirage_nuque": [
-    {
-      "question": "Avant un tirage nuque, que faut-il vérifier ?",
-      "correct": "Le réglage et la charge adaptée",
-      "wrong1": "Le nombre de machines dans la salle",
-      "wrong2": "La musique diffusée"
-    },
-    {
-      "question": "Quel comportement est recommandé ?",
-      "correct": "Tirer avec contrôle sans mouvement brusque",
-      "wrong1": "Donner un à-coup du haut du corps",
-      "wrong2": "Se pencher très fortement en arrière"
-    },
-    {
-      "question": "Pour terminer en sécurité, il faut :",
-      "correct": "Remonter la charge progressivement",
-      "wrong1": "Lâcher la barre immédiatement",
-      "wrong2": "Se retourner pendant le mouvement"
-    }
-  ],
   "tractions": [
     {
       "question": "Avant des tractions, quel repère de sécurité est correct ?",
@@ -277,6 +257,126 @@
       "correct": "Redescendre de manière contrôlée",
       "wrong1": "Se laisser tomber",
       "wrong2": "Tourner sur soi-même en descendant"
+    }
+  ],
+  "tirage_vertical": [
+    {
+      "question": "Avant d'utiliser le tirage vertical, que faut-il vérifier ?",
+      "correct": "Le réglage de l'assise, des appuis et la charge choisie",
+      "wrong1": "La couleur du siège",
+      "wrong2": "La musique dans la salle"
+    },
+    {
+      "question": "Quel comportement moteur est conseillé au tirage vertical ?",
+      "correct": "Tirer de manière contrôlée puis accompagner le retour",
+      "wrong1": "Donner un grand à-coup avec le buste",
+      "wrong2": "Lâcher la barre en fin de répétition"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Remonter la charge progressivement jusqu'à la position initiale",
+      "wrong1": "Lâcher la barre immédiatement",
+      "wrong2": "Se lever avant le retour complet"
+    }
+  ],
+  "biceps_curl": [
+    {
+      "question": "Avant d'utiliser le biceps curl, que faut-il régler ?",
+      "correct": "La position d'assise et des appuis pour être bien placé",
+      "wrong1": "Le nombre d'élèves dans la salle",
+      "wrong2": "La hauteur du plafond"
+    },
+    {
+      "question": "Quel comportement moteur est correct au biceps curl ?",
+      "correct": "Monter puis redescendre la charge en contrôlant le mouvement",
+      "wrong1": "Se balancer avec tout le corps",
+      "wrong2": "Lancer la charge avec un à-coup"
+    },
+    {
+      "question": "En fin de série, il faut :",
+      "correct": "Accompagner la charge jusqu'au repos",
+      "wrong1": "Lâcher les poignées d'un coup",
+      "wrong2": "Se lever avant l'arrêt complet"
+    }
+  ],
+  "butterfly": [
+    {
+      "question": "Avant d'utiliser le butterfly, que faut-il vérifier ?",
+      "correct": "Le siège et l'amplitude de mouvement adaptée à sa morphologie",
+      "wrong1": "Le nombre de répétitions de l'élève voisin",
+      "wrong2": "La couleur des poignées"
+    },
+    {
+      "question": "Quel repère moteur est juste au butterfly ?",
+      "correct": "Rapprocher puis ouvrir les bras sans à-coups",
+      "wrong1": "Jeter les bras en avant brutalement",
+      "wrong2": "Bloquer la respiration tout le long"
+    },
+    {
+      "question": "À la fin de la série, il faut :",
+      "correct": "Revenir lentement en position de départ",
+      "wrong1": "Lâcher les bras de levier",
+      "wrong2": "Tourner le tronc pendant le mouvement"
+    }
+  ],
+  "chaise_romaine": [
+    {
+      "question": "Avant d'utiliser la chaise romaine, que faut-il vérifier ?",
+      "correct": "La stabilité des appuis et de sa posture",
+      "wrong1": "Le poids total de la machine",
+      "wrong2": "La couleur du sol"
+    },
+    {
+      "question": "Quel comportement est conseillé sur la chaise romaine ?",
+      "correct": "Contrôler la montée et la descente des jambes ou du tronc",
+      "wrong1": "Donner de grands élans avec le bassin",
+      "wrong2": "Se laisser retomber d'un coup"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Revenir à une position stable avant de quitter l'appareil",
+      "wrong1": "Descendre rapidement sans contrôle",
+      "wrong2": "Tourner le corps en suspension"
+    }
+  ],
+  "squat": [
+    {
+      "question": "Avant d'utiliser la machine de squat, que faut-il vérifier ?",
+      "correct": "Le placement du dos, des pieds et la charge choisie",
+      "wrong1": "Le bruit autour de soi",
+      "wrong2": "La couleur des disques"
+    },
+    {
+      "question": "Quel repère moteur est correct au squat ?",
+      "correct": "Descendre et remonter en gardant un mouvement contrôlé",
+      "wrong1": "Rebondir en bas du mouvement",
+      "wrong2": "Tendre les jambes d'un coup sec"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Revenir en sécurité et reposer correctement la charge",
+      "wrong1": "Quitter la machine avant la fin du retour",
+      "wrong2": "Lâcher la charge brutalement"
+    }
+  ],
+  "chest_press": [
+    {
+      "question": "Avant d'utiliser la chest press, que faut-il vérifier ?",
+      "correct": "La hauteur du siège, la prise et la charge adaptée",
+      "wrong1": "La couleur du dossier",
+      "wrong2": "Le nombre de machines libres"
+    },
+    {
+      "question": "Quel comportement moteur est juste à la chest press ?",
+      "correct": "Pousser puis revenir en contrôlant le mouvement",
+      "wrong1": "Donner un à-coup pour lancer la charge",
+      "wrong2": "Décoller le dos du dossier"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Accompagner la charge jusqu'à la position de départ",
+      "wrong1": "Lâcher les poignées immédiatement",
+      "wrong2": "Tourner la tête pendant la poussée"
     }
   ]
 }

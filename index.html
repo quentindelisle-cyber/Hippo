@@ -803,7 +803,7 @@
             <div class="entryFields">
               <div class="field">
                 <label>Nombre de répétitions</label>
-                <input type="number" id="entryReps" min="1" step="1" value="10">
+                <input type="number" id="entryReps" min="1" max="40" step="1" value="10">
               </div>
               <div class="field">
                 <label>Charge soulevée (kg)</label>
@@ -881,7 +881,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v11_pwa";
+    const STORAGE_KEY = "hippopogramme_v12_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
 
     const animals = [
@@ -927,8 +927,13 @@
       { id:"shoulder", name:"Shoulder Press", tag:"Épaules", files:["machines/Shoulder Press.png"] },
       { id:"tapis", name:"Tapis de course", tag:"Cardio", files:["machines/Tapis de course.png"] },
       { id:"tirage_assis", name:"Tirage assis", tag:"Dos", files:["machines/Tirage Assis.png"] },
-      { id:"tirage_nuque", name:"Tirage nuque", tag:"Dos", files:["machines/Tirage Nuque.png"] },
-      { id:"tractions", name:"Tractions", tag:"Poids du corps", files:["machines/Tractions.png"] }
+      { id:"tractions", name:"Tractions", tag:"Poids du corps", files:["machines/Tractions.png"] },
+      { id:"tirage_vertical", name:"Tirage Vertical", tag:"Dos", files:["machines/Tirage Vertical.png"] },
+      { id:"biceps_curl", name:"Biceps Curl", tag:"Bras", files:["machines/Biceps Curl.png"] },
+      { id:"butterfly", name:"Butterfly", tag:"Pectoraux", files:["machines/Butterfly.png"] },
+      { id:"chaise_romaine", name:"Chaise Romaine", tag:"Abdos / Tronc", files:["machines/Chaise Romaine.png"] },
+      { id:"squat", name:"Squat", tag:"Jambes", files:["machines/Squat.png"] },
+      { id:"chest_press", name:"Chest Press", tag:"Pectoraux", files:["machines/Chest Press.png"] }
     ];
 
     let state = loadState();
@@ -965,7 +970,7 @@
         "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
         "personHistory","ranking","statsTable","exportPng",
         "challengeMachineGrid","individualList","addIndividualBtn",
-        "balanceTeamsCheckbox","balanceInfo","securityQuestionsCheckbox",
+        "balanceTeamsCheckbox","securityQuestionsCheckbox",
         "quizContainer","individualSeriesLimitCheckbox","individualSeriesLimitValue",
         "teamSeriesLimitCheckbox","teamSeriesLimitValue"
       ].forEach(id => el[id] = document.getElementById(id));
@@ -1023,7 +1028,6 @@
         state.balanceTeams = !!el.balanceTeamsCheckbox.checked;
         saveState();
         renderRanking();
-        updateBalanceInfo();
       });
 
       el.securityQuestionsCheckbox.addEventListener("change", ()=>{
@@ -1083,7 +1087,7 @@
       });
 
       const updateCalc = ()=>{
-        const reps = sanitizePositiveInt(el.entryReps.value, 10);
+        const reps = sanitizeBoundedInt(el.entryReps.value, 10, 1, 40);
         const load = sanitizeBoundedInt(el.entryLoad.value, 20, 1, 200);
         el.entryReps.value = reps;
         el.entryLoad.value = load;
@@ -1099,16 +1103,12 @@
         if(!person) return;
 
         const machineId = selectedMachineId;
-        const reps = sanitizePositiveInt(el.entryReps.value, 10);
+        const reps = sanitizeBoundedInt(el.entryReps.value, 10, 1, 40);
         const load = sanitizeBoundedInt(el.entryLoad.value, 20, 1, 200);
         const total = reps * load;
 
         if(!machineId){
           alert("Choisir une machine en cliquant sur sa miniature.");
-          return;
-        }
-        if(reps <= 0){
-          alert("Indiquer un nombre de répétitions supérieur à 0.");
           return;
         }
 
@@ -1264,7 +1264,7 @@
           makeTeam(1,"Équipe 1","#3b82f6",3),
           makeTeam(2,"Équipe 2","#ef4444",3)
         ],
-        selectedMachines:["presse","dc","rowing","velo","tapis","pompes","deltoides"]
+        selectedMachines:["presse","dc","rowing","velo","tapis","pompes","deltoides","tirage_vertical","biceps_curl","butterfly","chaise_romaine","squat","chest_press"]
       };
     }
 
@@ -1358,7 +1358,6 @@
       renderEntry();
       renderRanking();
       renderStatsTable();
-      updateBalanceInfo();
       saveState();
     }
 
@@ -1643,7 +1642,7 @@
         selectedMachineId = availableMachines[0]?.id || null;
       }
 
-      const reps = sanitizePositiveInt(el.entryReps.value, 10);
+      const reps = sanitizeBoundedInt(el.entryReps.value, 10, 1, 40);
       const load = sanitizeBoundedInt(el.entryLoad.value, 20, 1, 200);
       el.entryReps.value = reps;
       el.entryLoad.value = load;
@@ -1778,6 +1777,10 @@
       };
     }
 
+    function formatKg(n){
+      return (Math.round((n||0)*10)/10).toLocaleString("fr-FR") + " kg";
+    }
+
     function getTeamRawTotal(team){
       return team.students.reduce((sum,s)=>sum + getPersonTotal(s), 0);
     }
@@ -1795,12 +1798,6 @@
       const size = Math.max(1, team.students.length);
       const maxSize = Math.max(...state.teams.map(t=>Math.max(1, t.students.length)));
       return maxSize / size;
-    }
-
-    function updateBalanceInfo(){
-      if(state.mode !== "team"){
-        return;
-      }
     }
 
     function renderRanking(){
@@ -1890,10 +1887,6 @@
 
     function getPersonTotal(person){
       return (person.results || []).reduce((sum,r)=>sum + (Number(r.total)||0), 0);
-    }
-
-    function formatKg(n){
-      return (Math.round((n||0)*10)/10).toLocaleString("fr-FR") + " kg";
     }
 
     function getCurrentAnimal(weight){

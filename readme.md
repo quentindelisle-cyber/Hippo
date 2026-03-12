@@ -28,8 +28,13 @@ Créer un dossier `machines/` contenant exactement :
 - Shoulder Press.png
 - Tapis de course.png
 - Tirage Assis.png
-- Tirage Nuque.png
 - Tractions.png
+- Tirage Vertical.png
+- Biceps Curl.png
+- Butterfly.png
+- Chaise Romaine.png
+- Squat.png
+- Chest Press.png
 
 ## Questions sur les machines
 
@@ -39,11 +44,16 @@ Tu peux les modifier directement sans toucher au fichier HTML.
 
 ## Limitation du nombre de séries
 
-Tu peux maintenant définir :
+Tu peux définir :
 - une limitation pour le challenge individuel
 - une limitation pour le challenge collectif
 
 Si l’option est cochée, l’application bloque les saisies au-delà du nombre indiqué.
+
+## Bornes de saisie
+
+- Charge : de 1 à 200 kg
+- Répétitions : de 1 à 40
 
 ## Déploiement GitHub Pages
 
