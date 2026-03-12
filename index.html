@@ -155,13 +155,6 @@
     .smallText{font-size:12px;color:var(--muted)}
     .muted{color:var(--muted)}
 
-    .homeButtons{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin:12px 0 10px;
-    }
-
     .animalScaleCompact{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
@@ -271,7 +264,7 @@
       margin-top:6px;
     }
 
-    .studentBox,.teamBox,.questionBox{
+    .studentBox,.teamBox{
       background:#fff;
       border:1px solid var(--line);
       border-radius:12px;
@@ -306,9 +299,8 @@
 
     .compactOptions{
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
+      flex-direction:column;
+      gap:8px;
       margin:8px 0 0;
       padding:8px 10px;
       border:1px solid var(--line);
@@ -402,20 +394,14 @@
       font-weight:800;
     }
 
-    .questionGrid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:8px;
-      margin-top:8px;
-    }
-
-    .questionHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-      margin-bottom:6px;
-      flex-wrap:wrap;
+    .questionsFileNote{
+      margin-top:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fffdf7;
+      font-size:13px;
+      line-height:1.45;
     }
 
     .challengeLayout{
@@ -632,6 +618,35 @@
       display:block;
     }
 
+    .pickerGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .pickerBox{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      padding:10px;
+    }
+
+    .wheelSelect{
+      appearance:auto;
+      height:180px;
+      font-size:20px;
+      text-align:center;
+      padding:0;
+    }
+
+    .wheelValue{
+      margin-top:8px;
+      text-align:center;
+      font-weight:900;
+      color:#1f3f9a;
+    }
+
     .quizBox{
       margin-top:10px;
       border:1px solid var(--line);
@@ -673,16 +688,16 @@
 
     @media (max-width:1120px){
       .prepareGrid{grid-template-columns:1fr}
-      .questionGrid{grid-template-columns:1fr}
       .challengeLayout{grid-template-columns:1fr}
       .cardLandscape{min-height:auto}
       .ranking,.history{max-height:none}
       .personButtons{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
+      .pickerGrid{grid-template-columns:1fr}
     }
 
     @media (max-width:760px){
       .logoBox{width:64px;height:64px}
-      .homeButtons button,.nav button{flex:1 1 160px}
+      .nav button{flex:1 1 160px}
       .signature{position:static;display:inline-block;margin-top:12px}
     }
   </style>
@@ -708,12 +723,6 @@
     </nav>
 
     <section class="page active" id="pageHome">
-      <div class="homeButtons">
-        <button class="primary" id="goPrepare">Préparer le challenge</button>
-        <button class="secondary" id="goChallenge">Faire le challenge</button>
-        <button class="danger" id="resetBtnHome">Réinitialiser les données</button>
-      </div>
-
       <div class="card" style="margin-top:8px;">
         <h3 class="cardTitle">Échelle des mammifères</h3>
         <div class="animalScaleCompact" id="animalScale"></div>
@@ -740,38 +749,24 @@
               </div>
 
               <div id="blockTeams" style="display:none;">
-                <div class="row" style="margin-bottom:6px;">
-                  <div class="field" style="max-width:180px;">
-                    <label>Nombre d’équipes</label>
-                    <input type="number" id="teamCount" min="1" max="12" value="2">
-                  </div>
-                  <div class="field" style="max-width:180px;">
-                    <label>&nbsp;</label>
-                    <button class="secondary" id="generateTeams" type="button">Générer</button>
-                  </div>
-                  <div class="field" style="max-width:180px;">
-                    <label>&nbsp;</label>
-                    <button class="ghost" id="addTeamBtn" type="button">+ Ajouter équipe</button>
-                  </div>
+                <div class="field" style="max-width:180px;">
+                  <label>Nombre d’équipes</label>
+                  <input type="number" id="teamCount" min="1" max="12" value="2">
                 </div>
 
                 <div class="compactOptions">
                   <label class="checkboxRow">
                     <input type="checkbox" id="balanceTeamsCheckbox">
-                    Équilibrer le challenge en coefficientant les charges
+                    Équilibrer le challenge si nombre d’élèves différent par équipe
                   </label>
-                  <div class="smallText" id="balanceInfo">Rééquilibrage inactif.</div>
+
+                  <label class="checkboxRow">
+                    <input type="checkbox" id="securityQuestionsCheckbox">
+                    Connaissances sur les machines
+                  </label>
                 </div>
 
                 <div class="listBox" id="teamList"></div>
-              </div>
-
-              <div class="compactOptions" style="margin-top:10px;">
-                <label class="checkboxRow">
-                  <input type="checkbox" id="securityQuestionsCheckbox">
-                  Question sur les paramètres de sécurité des machines
-                </label>
-                <div class="smallText">Si erreur, performance minorée de 50 %.</div>
               </div>
             </div>
 
@@ -780,12 +775,11 @@
               <div class="machineGrid" id="machineGrid"></div>
             </div>
           </div>
-        </div>
 
-        <div class="card span-12">
-          <h3 class="cardTitle">Préparation des questions de sécurité</h3>
-          <div class="smallText">3 questions par machine : une bonne réponse et deux mauvaises.</div>
-          <div id="questionsEditor" style="margin-top:8px;"></div>
+          <div class="questionsFileNote">
+            Les questions sont maintenant lues dans le fichier <strong>machine-questions.json</strong> à la racine du repository.
+            Pour les modifier, édite directement ce fichier dans ton dépôt GitHub ou sur ton ordinateur.
+          </div>
         </div>
       </div>
     </section>
@@ -811,14 +805,17 @@
               <div class="challengeMachineGrid" id="challengeMachineGrid"></div>
             </div>
 
-            <div class="row" style="margin-top:8px;">
-              <div class="field">
-                <label>Nombre de répétitions</label>
-                <input type="number" id="entryReps" min="1" step="1" value="10">
+            <div class="pickerGrid">
+              <div class="pickerBox">
+                <label class="smallText" for="entryReps">Nombre de répétitions</label>
+                <select id="entryReps" class="wheelSelect" size="6"></select>
+                <div class="wheelValue" id="entryRepsValue">10 répétitions</div>
               </div>
-              <div class="field">
-                <label>Charge soulevée (kg)</label>
-                <input type="number" id="entryLoad" min="0" step="0.5" value="20">
+
+              <div class="pickerBox">
+                <label class="smallText" for="entryLoad">Charge soulevée (kg)</label>
+                <select id="entryLoad" class="wheelSelect" size="6"></select>
+                <div class="wheelValue" id="entryLoadValue">20 kg</div>
               </div>
             </div>
 
@@ -839,11 +836,11 @@
               <div class="animalHead">
                 <div>
                   <div class="smallText">Animal atteint</div>
-                  <div class="animalValue" id="currentAnimal">🐈 Chat</div>
+                  <div class="animalValue" id="currentAnimal">Chat</div>
                 </div>
                 <div style="text-align:right;">
                   <div class="smallText">Prochain objectif</div>
-                  <div style="font-size:16px;font-weight:900;" id="nextAnimal">🐕 Chien</div>
+                  <div style="font-size:16px;font-weight:900;" id="nextAnimal">Chien</div>
                 </div>
               </div>
               <div class="progress"><div id="studentProgressBar"></div></div>
@@ -892,7 +889,8 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v8_pwa";
+    const STORAGE_KEY = "hippopogramme_v9_pwa";
+    const QUESTIONS_URL = "./machine-questions.json";
 
     const animals = [
       { name:"Lapin", weight:2, icon:"🐇" },
@@ -912,15 +910,15 @@
       { name:"Rhinocéros", weight:2300, icon:"🦏" },
       { name:"Hippopotame", weight:3000, icon:"🦛" },
       { name:"Éléphant", weight:6000, icon:"🐘" },
-      { name:"2 éléphants", weight:12000, icon:"🐘🐘" },
-      { name:"3 éléphants", weight:18000, icon:"🐘×3" },
-      { name:"4 éléphants", weight:24000, icon:"🐘×4" },
-      { name:"5 éléphants", weight:30000, icon:"🐘×5" },
-      { name:"6 éléphants", weight:36000, icon:"🐘×6" },
-      { name:"7 éléphants", weight:42000, icon:"🐘×7" },
-      { name:"8 éléphants", weight:48000, icon:"🐘×8" },
-      { name:"9 éléphants", weight:54000, icon:"🐘×9" },
-      { name:"10 éléphants", weight:60000, icon:"🐘×10" },
+      { name:"2 éléphants", weight:12000, icon:"" },
+      { name:"3 éléphants", weight:18000, icon:"" },
+      { name:"4 éléphants", weight:24000, icon:"" },
+      { name:"5 éléphants", weight:30000, icon:"" },
+      { name:"6 éléphants", weight:36000, icon:"" },
+      { name:"7 éléphants", weight:42000, icon:"" },
+      { name:"8 éléphants", weight:48000, icon:"" },
+      { name:"9 éléphants", weight:54000, icon:"" },
+      { name:"10 éléphants", weight:60000, icon:"" },
       { name:"Baleine bleue", weight:120000, icon:"🐋" }
     ].sort((a,b)=>a.weight-b.weight);
 
@@ -946,13 +944,15 @@
     let selectedMachineId = null;
     let typingTimer = null;
     let pendingResult = null;
+    let machineQuestions = {};
     const el = {};
 
     document.addEventListener("DOMContentLoaded", init);
 
-    function init(){
+    async function init(){
       cache();
-      ensureQuestionsStructure();
+      populateWheelSelects();
+      await loadMachineQuestions();
       bind();
       renderAnimals();
       renderAll();
@@ -962,33 +962,52 @@
     function cache(){
       [
         "pageHome","pagePrepare","pageChallenge",
-        "navHome","navPrepare","navChallenge","resetBtn","resetBtnHome",
-        "goPrepare","goChallenge",
+        "navHome","navPrepare","navChallenge","resetBtn",
         "btnModeIndividual","btnModeTeam",
         "blockIndividual","blockTeams",
-        "teamCount","generateTeams","teamList",
+        "teamCount","teamList",
         "machineGrid",
         "personButtons",
         "emptySelection","entrySection","selectedName","selectedMeta",
-        "entryReps","entryLoad","entryTotal",
+        "entryReps","entryLoad","entryRepsValue","entryLoadValue","entryTotal",
         "saveResult","cancelSelection","undoLastAction",
         "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
         "personHistory","ranking","statsTable","exportPng",
-        "challengeMachineGrid","individualList","addIndividualBtn","addTeamBtn",
+        "challengeMachineGrid","individualList","addIndividualBtn",
         "balanceTeamsCheckbox","balanceInfo","securityQuestionsCheckbox",
-        "questionsEditor","quizContainer"
+        "quizContainer"
       ].forEach(id => el[id] = document.getElementById(id));
+    }
+
+    function populateWheelSelects(){
+      if (el.entryReps) {
+        el.entryReps.innerHTML = Array.from({length:100}, (_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+        el.entryReps.value = "10";
+      }
+      if (el.entryLoad) {
+        el.entryLoad.innerHTML = Array.from({length:200}, (_,i)=>`<option value="${i+1}">${i+1} kg</option>`).join("");
+        el.entryLoad.value = "20";
+      }
+    }
+
+    async function loadMachineQuestions(){
+      try{
+        const response = await fetch(QUESTIONS_URL, {cache:"no-store"});
+        if(!response.ok) throw new Error("questions file not found");
+        const data = await response.json();
+        machineQuestions = data || {};
+      }catch(e){
+        machineQuestions = {};
+      }
+      ensureQuestionsStructure();
     }
 
     function bind(){
       el.navHome.addEventListener("click", ()=>showPage("home"));
       el.navPrepare.addEventListener("click", ()=>showPage("prepare"));
       el.navChallenge.addEventListener("click", ()=>showPage("challenge"));
-      el.goPrepare.addEventListener("click", ()=>showPage("prepare"));
-      el.goChallenge.addEventListener("click", ()=>showPage("challenge"));
 
       el.resetBtn.addEventListener("click", resetAll);
-      el.resetBtnHome.addEventListener("click", resetAll);
 
       el.btnModeIndividual.addEventListener("click", ()=>{
         state.mode = "individual";
@@ -1010,23 +1029,16 @@
         renderAll();
       });
 
-      el.generateTeams.addEventListener("click", ()=>{
-        const count = clamp(parseInt(el.teamCount.value || "2", 10),1,12);
-        const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#14b8a6","#84cc16","#f97316","#64748b","#06b6d4","#e11d48"];
-        state.teams = Array.from({length:count}, (_,i)=>makeTeam(i+1,"Équipe "+(i+1),palette[i%palette.length],3));
-        selectedPersonId = null;
-        saveState();
-        renderAll();
+      el.teamCount.addEventListener("change", ()=>{
+        syncTeamCount();
+      });
+
+      el.teamCount.addEventListener("input", ()=>{
+        syncTeamCount();
       });
 
       el.addIndividualBtn.addEventListener("click", ()=>{
         state.individuals.push({id:"ind_"+uid(), name:"Nouvel élève", results:[]});
-        saveState();
-        renderAll();
-      });
-
-      el.addTeamBtn.addEventListener("click", ()=>{
-        state.teams.push(makeTeam(state.teams.length+1, "Nouvelle équipe", "#3b82f6", 3));
         saveState();
         renderAll();
       });
@@ -1054,7 +1066,6 @@
         }
         saveState();
         renderMachines();
-        renderQuestionsEditor();
         renderEntry();
       });
 
@@ -1076,11 +1087,15 @@
       const updateCalc = ()=>{
         const reps = parseFloat(el.entryReps.value || "0");
         const load = parseFloat(el.entryLoad.value || "0");
+        el.entryRepsValue.textContent = `${reps} répétitions`;
+        el.entryLoadValue.textContent = `${load} kg`;
         el.entryTotal.textContent = formatKg(reps * load);
       };
 
       el.entryReps.addEventListener("input", updateCalc);
+      el.entryReps.addEventListener("change", updateCalc);
       el.entryLoad.addEventListener("input", updateCalc);
+      el.entryLoad.addEventListener("change", updateCalc);
 
       el.saveResult.addEventListener("click", ()=>{
         if(!selectedPersonId) return;
@@ -1148,12 +1163,29 @@
       });
 
       el.exportPng.addEventListener("click", exportResultsAsPng);
+      updateCalc();
+    }
+
+    function syncTeamCount(){
+      const count = clamp(parseInt(el.teamCount.value || "1", 10),1,12);
+      el.teamCount.value = String(count);
+      const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#14b8a6","#84cc16","#f97316","#64748b","#06b6d4","#e11d48"];
+
+      while(state.teams.length < count){
+        const idx = state.teams.length;
+        state.teams.push(makeTeam(idx+1, `Équipe ${idx+1}`, palette[idx % palette.length], 3));
+      }
+      while(state.teams.length > count){
+        const removed = state.teams.pop();
+        if(removed && removed.students.some(s=>s.id===selectedPersonId)) selectedPersonId = null;
+      }
+      saveState();
+      renderAll();
     }
 
     function resetAll(){
       if(!confirm("Réinitialiser toutes les données ?")) return;
       state = defaultState();
-      ensureQuestionsStructure();
       selectedPersonId = null;
       selectedMachineId = null;
       pendingResult = null;
@@ -1199,8 +1231,7 @@
           makeTeam(1,"Équipe 1","#3b82f6",3),
           makeTeam(2,"Équipe 2","#ef4444",3)
         ],
-        selectedMachines:["presse","dc","rowing","velo","tapis","pompes","deltoides"],
-        machineQuestions:{}
+        selectedMachines:["presse","dc","rowing","velo","tapis","pompes","deltoides"]
       };
     }
 
@@ -1249,25 +1280,26 @@
             results:Array.isArray(p.results) ? p.results : []
           })) : []
         })) : d.teams,
-        selectedMachines: Array.isArray(s?.selectedMachines) && s.selectedMachines.length ? s.selectedMachines : d.selectedMachines,
-        machineQuestions: s?.machineQuestions && typeof s.machineQuestions === "object" ? s.machineQuestions : {}
+        selectedMachines: Array.isArray(s?.selectedMachines) && s.selectedMachines.length ? s.selectedMachines : d.selectedMachines
       };
     }
 
     function ensureQuestionsStructure(){
-      if(!state.machineQuestions) state.machineQuestions = {};
+      const normalized = {};
       machineCatalog.forEach(machine=>{
-        if(!Array.isArray(state.machineQuestions[machine.id]) || state.machineQuestions[machine.id].length !== 3){
-          state.machineQuestions[machine.id] = defaultQuestionSet(machine.name);
-        } else {
-          state.machineQuestions[machine.id] = state.machineQuestions[machine.id].map((q, idx)=>({
+        const src = machineQuestions[machine.id];
+        if(Array.isArray(src) && src.length === 3){
+          normalized[machine.id] = src.map((q, idx)=>({
             question: q?.question || defaultQuestionSet(machine.name)[idx].question,
             correct: q?.correct || defaultQuestionSet(machine.name)[idx].correct,
             wrong1: q?.wrong1 || defaultQuestionSet(machine.name)[idx].wrong1,
             wrong2: q?.wrong2 || defaultQuestionSet(machine.name)[idx].wrong2
           }));
+        } else {
+          normalized[machine.id] = defaultQuestionSet(machine.name);
         }
       });
+      machineQuestions = normalized;
     }
 
     function saveState(){
@@ -1285,7 +1317,6 @@
       renderIndividuals();
       renderTeams();
       renderMachines();
-      renderQuestionsEditor();
       renderPeople();
       renderEntry();
       renderRanking();
@@ -1297,7 +1328,7 @@
     function renderAnimals(){
       document.getElementById("animalScale").innerHTML = animals.map(a=>`
         <div class="animalItem">
-          <strong>${a.icon} ${a.name}</strong>
+          <strong>${a.icon ? a.icon + " " : ""}${a.name}</strong>
           <div class="muted">${formatKg(a.weight)}</div>
         </div>
       `).join("");
@@ -1460,57 +1491,6 @@
       });
     }
 
-    function renderQuestionsEditor(){
-      const machines = machineCatalog.filter(m=>state.selectedMachines.includes(m.id));
-      if(!machines.length){
-        el.questionsEditor.innerHTML = `<div class="empty">Sélectionner au moins une machine pour préparer des questions.</div>`;
-        return;
-      }
-
-      el.questionsEditor.innerHTML = machines.map(machine=>{
-        const qs = state.machineQuestions[machine.id] || defaultQuestionSet(machine.name);
-        return `
-          <div class="questionBox" style="margin-bottom:10px;">
-            <div class="questionHeader">
-              <div style="font-weight:900;">${machine.name}</div>
-              <div class="smallText">3 questions</div>
-            </div>
-            <div class="questionGrid">
-              ${qs.map((q, idx)=>`
-                <div class="questionBox" style="background:#fbfdff;">
-                  <div class="field">
-                    <label>Question ${idx+1}</label>
-                    <textarea data-q-field="${machine.id}__${idx}__question">${esc(q.question)}</textarea>
-                  </div>
-                  <div class="field">
-                    <label>Bonne réponse</label>
-                    <input data-q-field="${machine.id}__${idx}__correct" value="${esc(q.correct)}">
-                  </div>
-                  <div class="field">
-                    <label>Réponse fausse 1</label>
-                    <input data-q-field="${machine.id}__${idx}__wrong1" value="${esc(q.wrong1)}">
-                  </div>
-                  <div class="field">
-                    <label>Réponse fausse 2</label>
-                    <input data-q-field="${machine.id}__${idx}__wrong2" value="${esc(q.wrong2)}">
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      el.questionsEditor.querySelectorAll("[data-q-field]").forEach(inp=>{
-        inp.addEventListener("input", ()=>{
-          const [machineId, idx, field] = inp.dataset.qField.split("__");
-          if(!state.machineQuestions[machineId]) state.machineQuestions[machineId] = defaultQuestionSet(getMachine(machineId)?.name || "Machine");
-          state.machineQuestions[machineId][Number(idx)][field] = inp.value;
-          delayedSave();
-        });
-      });
-    }
-
     function stripAccents(str){
       return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
@@ -1624,6 +1604,8 @@
 
       const reps = parseFloat(el.entryReps.value || "0");
       const load = parseFloat(el.entryLoad.value || "0");
+      el.entryRepsValue.textContent = `${reps} répétitions`;
+      el.entryLoadValue.textContent = `${load} kg`;
       el.entryTotal.textContent = formatKg(reps * load);
 
       if(!selected){
@@ -1644,8 +1626,8 @@
       el.selectedName.textContent = selected.name + (state.mode === "team" ? " • " + selected.teamName : "");
       el.selectedMeta.textContent = `Cumul actuel : ${formatKg(total)}`;
 
-      el.currentAnimal.textContent = `${current.icon} ${current.name}`;
-      el.nextAnimal.textContent = next ? `${next.icon} ${next.name}` : "🏁 Maximum atteint";
+      el.currentAnimal.textContent = current.name;
+      el.nextAnimal.textContent = next ? next.name : "Maximum atteint";
       el.studentProgressBar.style.width = progression.percent + "%";
       el.studentProgressText.textContent = progression.text;
 
@@ -1658,7 +1640,7 @@
             <div class="historyItem">
               <strong>${r.machineName}</strong><br>
               ${r.reps} répétitions × ${r.load} kg = <strong>${formatKg(r.total)}</strong>
-              ${r.securityApplied ? `<br><span class="smallText">Question sécurité : ${r.securityCorrect ? "réussie" : "échouée (-50 %)"}</span>` : ""}
+              ${r.securityApplied ? `<br><span class="smallText">Connaissances machines : ${r.securityCorrect ? "réussies" : "échouées (-50 %)"}</span>` : ""}
               <br><span class="smallText">${r.date}</span>
             </div>
           `).join("")
@@ -1679,7 +1661,7 @@
     }
 
     function showSecurityQuestion(machineId){
-      const questions = state.machineQuestions[machineId] || defaultQuestionSet(getMachine(machineId)?.name || "Machine");
+      const questions = machineQuestions[machineId] || defaultQuestionSet(getMachine(machineId)?.name || "Machine");
       const q = questions[Math.floor(Math.random()*questions.length)];
       const answers = [
         {text:q.correct, ok:true},
@@ -1690,7 +1672,7 @@
       el.quizContainer.style.display = "block";
       el.quizContainer.innerHTML = `
         <div class="quizBox">
-          <div style="font-weight:900;">Question sécurité</div>
+          <div style="font-weight:900;">Connaissances sur les machines</div>
           <div style="margin-top:6px;">${escHtml(q.question)}</div>
           <div class="answerGrid">
             ${answers.map((a, idx)=>`
@@ -1805,7 +1787,7 @@
             <div>${state.mode==="team" ? `<span class="colorDot" style="background:${item.color};"></span>` : ""}#${idx+1} • ${item.name}</div>
             <div>${item.label}</div>
           </div>
-          <div class="smallText" style="margin-bottom:5px;">${item.animal.icon} ${item.animal.name}${item.sub ? " • " + item.sub : ""}</div>
+          <div class="smallText" style="margin-bottom:5px;">${item.animal.name}${item.sub ? " • " + item.sub : ""}</div>
           <div class="progress"><div style="width:${Math.min(100,(item.total/max)*100)}%;"></div></div>
         </div>
       `).join("") : `<div class="empty">Aucun résultat.</div>`;
@@ -1824,7 +1806,7 @@
             <td>${state.mode === "team" ? `<span class="colorDot" style="background:${p.teamColor};"></span>${p.teamName}` : "—"}</td>
             <td>${p.name}</td>
             <td><strong>${formatKg(total)}</strong></td>
-            <td>${animal.icon} ${animal.name}</td>
+            <td>${animal.name}</td>
             <td>${(p.results||[]).length}</td>
             <td>${machineNames.length ? machineNames.join(", ") : "—"}</td>
           </tr>
@@ -1898,7 +1880,7 @@
 
       return {
         percent,
-        text:`Encore ${formatKg(remaining)} pour atteindre ${next.icon} ${next.name}.`
+        text:`Encore ${formatKg(remaining)} pour atteindre ${next.name}.`
       };
     }
 

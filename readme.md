@@ -7,6 +7,7 @@ Web app EPS / musculation au format PWA.
 - index.html
 - manifest.webmanifest
 - service-worker.js
+- machine-questions.json
 - Logo N'EPS.jpeg
 - icon-192.png
 - icon-512.png
@@ -29,6 +30,19 @@ Créer un dossier `machines/` contenant exactement :
 - Tirage Assis.png
 - Tirage Nuque.png
 - Tractions.png
+
+## Questions sur les machines
+
+Les questions sont dans le fichier `machine-questions.json` à la racine du dépôt.
+
+Tu peux les modifier directement sans toucher au fichier HTML.
+
+Chaque machine contient 3 questions.
+Chaque question contient :
+- `question`
+- `correct`
+- `wrong1`
+- `wrong2`
 
 ## Déploiement GitHub Pages
 

@@ -1,10 +1,11 @@
-const CACHE_NAME = "hippopogramme-pwa-v1";
+const CACHE_NAME = "hippopogramme-pwa-v2";
 
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./service-worker.js",
+  "./machine-questions.json",
   "./Logo N'EPS.jpeg",
   "./icon-192.png",
   "./icon-512.png"
@@ -30,6 +31,9 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request);
+    })
   );
 });

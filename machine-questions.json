@@ -1,0 +1,282 @@
+{
+  "velo": [
+    {
+      "question": "Quel réglage de sécurité dois-tu vérifier avant d'utiliser le vélo ?",
+      "correct": "La selle et le guidon doivent être réglés à ma morphologie",
+      "wrong1": "La couleur du cadre doit me plaire",
+      "wrong2": "Il faut pédaler le plus vite possible dès le début"
+    },
+    {
+      "question": "Quel comportement est recommandé sur le vélo ?",
+      "correct": "Garder une posture stable et un pédalage contrôlé",
+      "wrong1": "Se lever sans arrêt de la selle",
+      "wrong2": "Lâcher le guidon pendant l'effort"
+    },
+    {
+      "question": "Avant de descendre du vélo, que faut-il faire ?",
+      "correct": "Réduire l'effort et stabiliser la machine",
+      "wrong1": "Sauter du vélo en mouvement",
+      "wrong2": "Tourner les pédales en arrière très vite"
+    }
+  ],
+  "deltoides": [
+    {
+      "question": "Avant d'utiliser la machine deltoïdes, que faut-il régler ?",
+      "correct": "Le siège et l'amplitude doivent être adaptés à ma taille",
+      "wrong1": "Le nombre d'élèves autour",
+      "wrong2": "La musique de la salle"
+    },
+    {
+      "question": "Pendant le mouvement, quel repère moteur est juste ?",
+      "correct": "Contrôler le geste sans à-coups",
+      "wrong1": "Jeter la charge vers le haut",
+      "wrong2": "Bloquer la respiration tout le long"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Revenir en position de départ en accompagnant la charge",
+      "wrong1": "Lâcher les poignées d'un coup",
+      "wrong2": "Se retourner avant la fin du mouvement"
+    }
+  ],
+  "dc": [
+    {
+      "question": "Avant d'utiliser le développé couché, que faut-il vérifier ?",
+      "correct": "Le placement sur le banc et la charge adaptée",
+      "wrong1": "Que la barre soit la plus lourde possible",
+      "wrong2": "Qu'il y ait du bruit dans la salle"
+    },
+    {
+      "question": "Quel comportement est conseillé au développé couché ?",
+      "correct": "Garder un mouvement contrôlé et stable",
+      "wrong1": "Faire rebondir la charge",
+      "wrong2": "Décoller le bassin pour aller plus vite"
+    },
+    {
+      "question": "À la fin de la série, que faut-il faire ?",
+      "correct": "Reposer la charge en sécurité",
+      "wrong1": "Lâcher la barre sur le support",
+      "wrong2": "Tourner la tête et parler pendant la poussée"
+    }
+  ],
+  "dorso": [
+    {
+      "question": "Quel réglage faut-il faire sur la machine dorso lombaire ?",
+      "correct": "Adapter la position des appuis à sa morphologie",
+      "wrong1": "Régler au hasard",
+      "wrong2": "Choisir la position la plus haute possible sans test"
+    },
+    {
+      "question": "Quel principe moteur est correct ?",
+      "correct": "Contrôler l'amplitude et rester gainé",
+      "wrong1": "Chercher à aller le plus loin possible sans contrôle",
+      "wrong2": "Faire des secousses rapides"
+    },
+    {
+      "question": "Quel comportement est sécurisé ?",
+      "correct": "Revenir doucement à la position initiale",
+      "wrong1": "Se laisser retomber",
+      "wrong2": "Tourner le tronc pendant l'effort"
+    }
+  ],
+  "ischios": [
+    {
+      "question": "Avant d'utiliser la machine ischios, que faut-il régler ?",
+      "correct": "Les appuis et le siège doivent être adaptés",
+      "wrong1": "Le nombre de répétitions de l'élève suivant",
+      "wrong2": "Le volume de la salle"
+    },
+    {
+      "question": "Quel comportement moteur est juste ?",
+      "correct": "Faire un geste fluide et contrôlé",
+      "wrong1": "Donner un coup sec à chaque répétition",
+      "wrong2": "Lever les hanches pour aider le mouvement"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Accompagner la charge jusqu'à la position de repos",
+      "wrong1": "Lâcher l'appui immédiatement",
+      "wrong2": "S'arrêter au milieu du mouvement"
+    }
+  ],
+  "legcurl": [
+    {
+      "question": "Quel réglage faut-il vérifier sur le leg curl ?",
+      "correct": "La position des rouleaux et du siège",
+      "wrong1": "La couleur des poignées",
+      "wrong2": "Le nombre total d'équipes"
+    },
+    {
+      "question": "Quel principe moteur est correct ?",
+      "correct": "Contrôler la montée et la descente de la charge",
+      "wrong1": "Donner de l'élan avec tout le corps",
+      "wrong2": "Bloquer sa respiration pendant toute la série"
+    },
+    {
+      "question": "Pour finir en sécurité, il faut :",
+      "correct": "Revenir lentement à la position de départ",
+      "wrong1": "Lâcher la charge",
+      "wrong2": "Se relever avant l'arrêt complet"
+    }
+  ],
+  "pompes": [
+    {
+      "question": "Avant une série de pompes, quel repère de sécurité est correct ?",
+      "correct": "Garder un alignement stable du corps",
+      "wrong1": "Creuser le dos au maximum",
+      "wrong2": "Croiser les pieds pour aller plus vite"
+    },
+    {
+      "question": "Pendant les pompes, quel comportement est conseillé ?",
+      "correct": "Contrôler la descente et la remontée",
+      "wrong1": "S'écraser au sol à chaque répétition",
+      "wrong2": "Faire seulement des à-coups rapides"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Relâcher l'effort en gardant le contrôle",
+      "wrong1": "Se jeter au sol",
+      "wrong2": "Tourner brusquement le tronc"
+    }
+  ],
+  "presse": [
+    {
+      "question": "Avant d'utiliser la presse oblique, que faut-il vérifier ?",
+      "correct": "Le réglage du siège et la position des pieds",
+      "wrong1": "La vitesse de l'élève précédent",
+      "wrong2": "La couleur des disques"
+    },
+    {
+      "question": "Quel repère moteur est juste à la presse ?",
+      "correct": "Pousser sans verrouiller brutalement les jambes",
+      "wrong1": "Tendre les genoux d'un coup sec",
+      "wrong2": "Décoller le bassin pour gagner de la force"
+    },
+    {
+      "question": "À la fin de la série, que faut-il faire ?",
+      "correct": "Ramener la charge sous contrôle et sécuriser la machine",
+      "wrong1": "Lâcher la plateforme",
+      "wrong2": "Sortir sans attendre l'arrêt"
+    }
+  ],
+  "rowing": [
+    {
+      "question": "Avant d'utiliser la machine rowing, que faut-il régler ?",
+      "correct": "Le siège et l'amplitude du tirage",
+      "wrong1": "Le chronomètre mural",
+      "wrong2": "Le tapis de l'élève voisin"
+    },
+    {
+      "question": "Quel comportement moteur est recommandé ?",
+      "correct": "Tirer en contrôlant le retour",
+      "wrong1": "Jeter les épaules en arrière",
+      "wrong2": "Lâcher la poignée après chaque répétition"
+    },
+    {
+      "question": "Pour finir une série de rowing en sécurité, il faut :",
+      "correct": "Accompagner la charge jusqu'au repos",
+      "wrong1": "Laisser revenir la charge d'un coup",
+      "wrong2": "Se lever avant le retour complet"
+    }
+  ],
+  "shoulder": [
+    {
+      "question": "Avant le shoulder press, que faut-il vérifier ?",
+      "correct": "Le réglage du siège et la position des mains",
+      "wrong1": "La couleur du dossier",
+      "wrong2": "Le nombre de machines libres"
+    },
+    {
+      "question": "Quel comportement est correct ?",
+      "correct": "Pousser avec contrôle sans cambrer exagérément",
+      "wrong1": "Se pencher fortement en arrière",
+      "wrong2": "Donner un à-coup pour lancer la charge"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Revenir en position de départ en accompagnant la charge",
+      "wrong1": "Lâcher les poignées",
+      "wrong2": "Tourner la tête pendant la poussée"
+    }
+  ],
+  "tapis": [
+    {
+      "question": "Avant d'utiliser le tapis de course, que faut-il vérifier ?",
+      "correct": "La vitesse choisie et sa capacité à la maîtriser",
+      "wrong1": "La couleur de l'écran",
+      "wrong2": "Le score des autres équipes"
+    },
+    {
+      "question": "Quel comportement est conseillé sur le tapis ?",
+      "correct": "Courir en restant stable et progressif",
+      "wrong1": "Monter immédiatement à la vitesse maximale",
+      "wrong2": "Regarder derrière soi en courant"
+    },
+    {
+      "question": "Avant de descendre du tapis, il faut :",
+      "correct": "Ralentir puis arrêter la machine",
+      "wrong1": "Sauter sur les côtés en pleine course",
+      "wrong2": "Couper le contact sans prévenir"
+    }
+  ],
+  "tirage_assis": [
+    {
+      "question": "Avant un tirage assis, que faut-il régler ?",
+      "correct": "La position d'assise et la prise",
+      "wrong1": "Le nombre de fenêtres ouvertes",
+      "wrong2": "La couleur de ses chaussures"
+    },
+    {
+      "question": "Quel principe moteur est correct ?",
+      "correct": "Tirer puis revenir en contrôlant la charge",
+      "wrong1": "Se jeter en arrière à chaque répétition",
+      "wrong2": "Faire rebondir le câble"
+    },
+    {
+      "question": "En fin de série, il faut :",
+      "correct": "Reposer la charge progressivement",
+      "wrong1": "Lâcher la poignée",
+      "wrong2": "Se lever pendant le retour"
+    }
+  ],
+  "tirage_nuque": [
+    {
+      "question": "Avant un tirage nuque, que faut-il vérifier ?",
+      "correct": "Le réglage et la charge adaptée",
+      "wrong1": "Le nombre de machines dans la salle",
+      "wrong2": "La musique diffusée"
+    },
+    {
+      "question": "Quel comportement est recommandé ?",
+      "correct": "Tirer avec contrôle sans mouvement brusque",
+      "wrong1": "Donner un à-coup du haut du corps",
+      "wrong2": "Se pencher très fortement en arrière"
+    },
+    {
+      "question": "Pour terminer en sécurité, il faut :",
+      "correct": "Remonter la charge progressivement",
+      "wrong1": "Lâcher la barre immédiatement",
+      "wrong2": "Se retourner pendant le mouvement"
+    }
+  ],
+  "tractions": [
+    {
+      "question": "Avant des tractions, quel repère de sécurité est correct ?",
+      "correct": "Stabiliser la prise et contrôler sa posture",
+      "wrong1": "Se balancer dès la première répétition",
+      "wrong2": "Sauter sans vérifier la prise"
+    },
+    {
+      "question": "Quel comportement moteur est conseillé ?",
+      "correct": "Monter et redescendre avec contrôle",
+      "wrong1": "Faire uniquement des secousses",
+      "wrong2": "Lâcher une main pendant l'effort"
+    },
+    {
+      "question": "En fin de série, que faut-il faire ?",
+      "correct": "Redescendre de manière contrôlée",
+      "wrong1": "Se laisser tomber",
+      "wrong2": "Tourner sur soi-même en descendant"
+    }
+  ]
+}
