@@ -37,13 +37,6 @@ Les questions sont dans le fichier `machine-questions.json` à la racine du dép
 
 Tu peux les modifier directement sans toucher au fichier HTML.
 
-Chaque machine contient 3 questions.
-Chaque question contient :
-- `question`
-- `correct`
-- `wrong1`
-- `wrong2`
-
 ## Déploiement GitHub Pages
 
 1. Créer un dépôt GitHub.

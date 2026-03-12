@@ -19,8 +19,12 @@
       --line:#d6e0ee;
       --text:#172033;
       --muted:#66758f;
-      --primary:#2957d3;
-      --primary2:#4d7df8;
+      --primary:#7c3aed;
+      --primary2:#8b5cf6;
+      --orange:#f59e0b;
+      --orange2:#fbbf24;
+      --green:#16a34a;
+      --green2:#22c55e;
       --success:#0ea66c;
       --danger:#dc2626;
       --warning:#f59e0b;
@@ -48,23 +52,15 @@
     }
 
     .header{
-      display:flex;
-      justify-content:flex-start;
+      display:grid;
+      grid-template-columns:76px 1fr 76px;
       align-items:center;
-      gap:14px;
-      flex-wrap:wrap;
+      gap:12px;
       background:linear-gradient(135deg,#ffffff 0%, #eef4ff 100%);
       border:1px solid var(--line);
       border-radius:20px;
       box-shadow:var(--shadow);
       padding:12px 16px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:260px;
     }
 
     .logoBox{
@@ -78,7 +74,6 @@
       align-items:center;
       justify-content:center;
       box-shadow:0 6px 16px rgba(0,0,0,.08);
-      flex:0 0 auto;
     }
 
     .logoBox img{
@@ -88,8 +83,14 @@
       display:block;
     }
 
+    .headerSpacer{
+      width:76px;
+      height:76px;
+    }
+
     h1{
       margin:0;
+      text-align:center;
       font-size:clamp(24px,3vw,40px);
       line-height:1;
       letter-spacing:.2px;
@@ -113,8 +114,22 @@
     }
 
     button:hover{transform:translateY(-1px)}
-    button.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}
-    button.secondary{background:#eaf0ff;color:#2247ba}
+
+    .btnInterface{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      color:#fff;
+    }
+
+    .btnPrepare{
+      background:linear-gradient(135deg,var(--orange),var(--orange2));
+      color:#fff;
+    }
+
+    .btnChallenge{
+      background:linear-gradient(135deg,var(--green),var(--green2));
+      color:#fff;
+    }
+
     button.success{background:#dff8ed;color:#066847}
     button.danger{background:#fee2e2;color:#991b1b}
     button.warning{background:#fff2d9;color:#9a6500}
@@ -122,8 +137,6 @@
     button.small{padding:6px 9px;font-size:12px;border-radius:10px}
 
     .navBtn.active{
-      background:linear-gradient(135deg,var(--primary),var(--primary2));
-      color:#fff;
       box-shadow:0 8px 18px rgba(41,87,211,.24);
     }
 
@@ -238,7 +251,7 @@
     }
 
     .toggle button.selected{
-      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      background:linear-gradient(135deg,#2957d3,#4d7df8);
       color:#fff;
       box-shadow:0 8px 18px rgba(41,87,211,.20);
     }
@@ -344,7 +357,7 @@
 
     .machineCard:hover{transform:translateY(-1px)}
     .machineCard.selected{
-      border:2px solid var(--primary);
+      border:2px solid #2957d3;
       background:linear-gradient(180deg,#f9fbff 0%, #eaf1ff 100%);
       box-shadow:0 8px 18px rgba(41,87,211,.12);
     }
@@ -392,16 +405,6 @@
       border:1px solid #d4e0ff;
       font-size:10px;
       font-weight:800;
-    }
-
-    .questionsFileNote{
-      margin-top:10px;
-      padding:10px 12px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#fffdf7;
-      font-size:13px;
-      line-height:1.45;
     }
 
     .challengeLayout{
@@ -595,7 +598,7 @@
     }
 
     .challengeMachineCard.active{
-      border:2px solid var(--primary);
+      border:2px solid #2957d3;
       background:#eef4ff;
       box-shadow:0 6px 16px rgba(41,87,211,.12);
     }
@@ -620,7 +623,7 @@
 
     .pickerGrid{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr;
       gap:12px;
       margin-top:8px;
     }
@@ -632,12 +635,47 @@
       padding:10px;
     }
 
-    .wheelSelect{
-      appearance:auto;
-      height:180px;
-      font-size:20px;
+    .horizontalWheelWrap{
+      overflow-x:auto;
+      padding-bottom:6px;
+      -webkit-overflow-scrolling:touch;
+      scroll-behavior:smooth;
+      border:1px solid #dbe4ef;
+      border-radius:12px;
+      background:#f8fbff;
+    }
+
+    .horizontalWheel{
+      display:flex;
+      gap:8px;
+      padding:10px;
+      width:max-content;
+      min-width:100%;
+    }
+
+    .wheelChip{
+      min-width:78px;
+      padding:12px 10px;
+      border-radius:12px;
+      border:1px solid #cfd9ea;
+      background:#fff;
       text-align:center;
-      padding:0;
+      font-size:18px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s ease;
+    }
+
+    .wheelChip:hover{
+      transform:translateY(-1px);
+    }
+
+    .wheelChip.active{
+      background:linear-gradient(135deg,#2957d3,#4d7df8);
+      color:#fff;
+      border-color:#2957d3;
+      box-shadow:0 8px 16px rgba(41,87,211,.18);
     }
 
     .wheelValue{
@@ -692,33 +730,33 @@
       .cardLandscape{min-height:auto}
       .ranking,.history{max-height:none}
       .personButtons{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
-      .pickerGrid{grid-template-columns:1fr}
     }
 
     @media (max-width:760px){
-      .logoBox{width:64px;height:64px}
+      .header{
+        grid-template-columns:64px 1fr 64px;
+      }
+      .logoBox,.headerSpacer{width:64px;height:64px}
       .nav button{flex:1 1 160px}
       .signature{position:static;display:inline-block;margin-top:12px}
+      .wheelChip{min-width:68px;font-size:16px}
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="header">
-      <div class="brand">
-        <div class="logoBox">
-          <img src="Logo N'EPS.jpeg" alt="Logo N'EPS">
-        </div>
-        <div>
-          <h1>Hippopogramme</h1>
-        </div>
+      <div class="logoBox">
+        <img src="Logo N'EPS.jpeg" alt="Logo N'EPS">
       </div>
+      <h1>Hippopogramme</h1>
+      <div class="headerSpacer"></div>
     </header>
 
     <nav class="nav">
-      <button class="navBtn active primary" id="navHome">Interface</button>
-      <button class="navBtn" id="navPrepare">Préparer le challenge</button>
-      <button class="navBtn" id="navChallenge">Faire le challenge</button>
+      <button class="navBtn btnInterface active" id="navHome">Interface</button>
+      <button class="navBtn btnPrepare" id="navPrepare">Préparer le challenge</button>
+      <button class="navBtn btnChallenge" id="navChallenge">Faire le challenge</button>
       <button class="danger" id="resetBtn">Réinitialiser les données</button>
     </nav>
 
@@ -775,11 +813,6 @@
               <div class="machineGrid" id="machineGrid"></div>
             </div>
           </div>
-
-          <div class="questionsFileNote">
-            Les questions sont maintenant lues dans le fichier <strong>machine-questions.json</strong> à la racine du repository.
-            Pour les modifier, édite directement ce fichier dans ton dépôt GitHub ou sur ton ordinateur.
-          </div>
         </div>
       </div>
     </section>
@@ -807,14 +840,18 @@
 
             <div class="pickerGrid">
               <div class="pickerBox">
-                <label class="smallText" for="entryReps">Nombre de répétitions</label>
-                <select id="entryReps" class="wheelSelect" size="6"></select>
+                <label class="smallText">Nombre de répétitions</label>
+                <div class="horizontalWheelWrap">
+                  <div class="horizontalWheel" id="repsWheel"></div>
+                </div>
                 <div class="wheelValue" id="entryRepsValue">10 répétitions</div>
               </div>
 
               <div class="pickerBox">
-                <label class="smallText" for="entryLoad">Charge soulevée (kg)</label>
-                <select id="entryLoad" class="wheelSelect" size="6"></select>
+                <label class="smallText">Charge soulevée (kg)</label>
+                <div class="horizontalWheelWrap">
+                  <div class="horizontalWheel" id="loadWheel"></div>
+                </div>
                 <div class="wheelValue" id="entryLoadValue">20 kg</div>
               </div>
             </div>
@@ -889,7 +926,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v9_pwa";
+    const STORAGE_KEY = "hippopogramme_v10_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
 
     const animals = [
@@ -945,13 +982,15 @@
     let typingTimer = null;
     let pendingResult = null;
     let machineQuestions = {};
+    let currentReps = 10;
+    let currentLoad = 20;
     const el = {};
 
     document.addEventListener("DOMContentLoaded", init);
 
     async function init(){
       cache();
-      populateWheelSelects();
+      buildHorizontalWheels();
       await loadMachineQuestions();
       bind();
       renderAnimals();
@@ -969,25 +1008,26 @@
         "machineGrid",
         "personButtons",
         "emptySelection","entrySection","selectedName","selectedMeta",
-        "entryReps","entryLoad","entryRepsValue","entryLoadValue","entryTotal",
+        "entryRepsValue","entryLoadValue","entryTotal",
         "saveResult","cancelSelection","undoLastAction",
         "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
         "personHistory","ranking","statsTable","exportPng",
         "challengeMachineGrid","individualList","addIndividualBtn",
         "balanceTeamsCheckbox","balanceInfo","securityQuestionsCheckbox",
-        "quizContainer"
+        "quizContainer","repsWheel","loadWheel"
       ].forEach(id => el[id] = document.getElementById(id));
     }
 
-    function populateWheelSelects(){
-      if (el.entryReps) {
-        el.entryReps.innerHTML = Array.from({length:100}, (_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
-        el.entryReps.value = "10";
-      }
-      if (el.entryLoad) {
-        el.entryLoad.innerHTML = Array.from({length:200}, (_,i)=>`<option value="${i+1}">${i+1} kg</option>`).join("");
-        el.entryLoad.value = "20";
-      }
+    function buildHorizontalWheels(){
+      el.repsWheel.innerHTML = Array.from({length:100}, (_,i)=>`
+        <div class="wheelChip ${i+1===10 ? "active" : ""}" data-wheel="reps" data-value="${i+1}">${i+1}</div>
+      `).join("");
+
+      el.loadWheel.innerHTML = Array.from({length:200}, (_,i)=>`
+        <div class="wheelChip ${i+1===20 ? "active" : ""}" data-wheel="load" data-value="${i+1}">${i+1}</div>
+      `).join("");
+
+      updateWheelDisplays();
     }
 
     async function loadMachineQuestions(){
@@ -1029,13 +1069,8 @@
         renderAll();
       });
 
-      el.teamCount.addEventListener("change", ()=>{
-        syncTeamCount();
-      });
-
-      el.teamCount.addEventListener("input", ()=>{
-        syncTeamCount();
-      });
+      el.teamCount.addEventListener("change", syncTeamCount);
+      el.teamCount.addEventListener("input", syncTeamCount);
 
       el.addIndividualBtn.addEventListener("click", ()=>{
         state.individuals.push({id:"ind_"+uid(), name:"Nouvel élève", results:[]});
@@ -1084,18 +1119,19 @@
         renderChallengeMachinePicker();
       });
 
-      const updateCalc = ()=>{
-        const reps = parseFloat(el.entryReps.value || "0");
-        const load = parseFloat(el.entryLoad.value || "0");
-        el.entryRepsValue.textContent = `${reps} répétitions`;
-        el.entryLoadValue.textContent = `${load} kg`;
-        el.entryTotal.textContent = formatKg(reps * load);
-      };
-
-      el.entryReps.addEventListener("input", updateCalc);
-      el.entryReps.addEventListener("change", updateCalc);
-      el.entryLoad.addEventListener("input", updateCalc);
-      el.entryLoad.addEventListener("change", updateCalc);
+      document.addEventListener("click", (e)=>{
+        const chip = e.target.closest(".wheelChip");
+        if(!chip) return;
+        const value = parseInt(chip.dataset.value, 10);
+        if(chip.dataset.wheel === "reps"){
+          currentReps = value;
+        } else {
+          currentLoad = value;
+        }
+        updateWheelActiveStates();
+        updateWheelDisplays();
+        chip.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+      });
 
       el.saveResult.addEventListener("click", ()=>{
         if(!selectedPersonId) return;
@@ -1103,8 +1139,8 @@
         if(!person) return;
 
         const machineId = selectedMachineId;
-        const reps = Math.max(0, parseFloat(el.entryReps.value || "0"));
-        const load = Math.max(0, parseFloat(el.entryLoad.value || "0"));
+        const reps = Math.max(0, currentReps);
+        const load = Math.max(0, currentLoad);
         const total = reps * load;
 
         if(!machineId){
@@ -1158,16 +1194,29 @@
         selectedPersonId = null;
         selectedMachineId = null;
         pendingResult = null;
-        hideQuiz();
         renderAll();
       });
 
       el.exportPng.addEventListener("click", exportResultsAsPng);
-      updateCalc();
+    }
+
+    function updateWheelActiveStates(){
+      document.querySelectorAll('.wheelChip[data-wheel="reps"]').forEach(chip=>{
+        chip.classList.toggle("active", parseInt(chip.dataset.value,10) === currentReps);
+      });
+      document.querySelectorAll('.wheelChip[data-wheel="load"]').forEach(chip=>{
+        chip.classList.toggle("active", parseInt(chip.dataset.value,10) === currentLoad);
+      });
+    }
+
+    function updateWheelDisplays(){
+      el.entryRepsValue.textContent = `${currentReps} répétitions`;
+      el.entryLoadValue.textContent = `${currentLoad} kg`;
+      el.entryTotal.textContent = formatKg(currentReps * currentLoad);
     }
 
     function syncTeamCount(){
-      const count = clamp(parseInt(el.teamCount.value || "1", 10),1,12);
+      const count = Math.max(1, Math.min(12, parseInt(el.teamCount.value || "1", 10)));
       el.teamCount.value = String(count);
       const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#14b8a6","#84cc16","#f97316","#64748b","#06b6d4","#e11d48"];
 
@@ -1189,6 +1238,10 @@
       selectedPersonId = null;
       selectedMachineId = null;
       pendingResult = null;
+      currentReps = 10;
+      currentLoad = 20;
+      updateWheelActiveStates();
+      updateWheelDisplays();
       saveState();
       renderAll();
       showPage("home");
@@ -1329,7 +1382,7 @@
       document.getElementById("animalScale").innerHTML = animals.map(a=>`
         <div class="animalItem">
           <strong>${a.icon ? a.icon + " " : ""}${a.name}</strong>
-          <div class="muted">${formatKg(a.weight)}</div>
+          <div class="muted">${(Math.round((a.weight||0)*10)/10).toLocaleString("fr-FR")} kg</div>
         </div>
       `).join("");
     }
@@ -1602,11 +1655,7 @@
         selectedMachineId = availableMachines[0]?.id || null;
       }
 
-      const reps = parseFloat(el.entryReps.value || "0");
-      const load = parseFloat(el.entryLoad.value || "0");
-      el.entryRepsValue.textContent = `${reps} répétitions`;
-      el.entryLoadValue.textContent = `${load} kg`;
-      el.entryTotal.textContent = formatKg(reps * load);
+      updateWheelDisplays();
 
       if(!selected){
         el.emptySelection.style.display = "block";
@@ -1905,10 +1954,6 @@
         .replaceAll('"',"&quot;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;");
-    }
-
-    function clamp(n,min,max){
-      return Math.max(min, Math.min(max, n));
     }
 
     function uid(){
