@@ -214,7 +214,7 @@
       align-items:center;
     }
 
-    input,select,textarea{
+    input,textarea{
       width:100%;
       border:1px solid #cfd9ea;
       background:#fff;
@@ -464,11 +464,19 @@
       margin-bottom:5px;
     }
 
+    .entryFields{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:8px;
+    }
+
     .calcBox{
       padding:10px;
       border-radius:14px;
       background:#f7faff;
       border:1px solid var(--line);
+      margin-top:10px;
     }
 
     .bigCalc{
@@ -621,70 +629,6 @@
       display:block;
     }
 
-    .pickerGrid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-      margin-top:8px;
-    }
-
-    .pickerBox{
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#fff;
-      padding:10px;
-    }
-
-    .horizontalWheelWrap{
-      overflow-x:auto;
-      padding-bottom:6px;
-      -webkit-overflow-scrolling:touch;
-      scroll-behavior:smooth;
-      border:1px solid #dbe4ef;
-      border-radius:12px;
-      background:#f8fbff;
-    }
-
-    .horizontalWheel{
-      display:flex;
-      gap:8px;
-      padding:10px;
-      width:max-content;
-      min-width:100%;
-    }
-
-    .wheelChip{
-      min-width:78px;
-      padding:12px 10px;
-      border-radius:12px;
-      border:1px solid #cfd9ea;
-      background:#fff;
-      text-align:center;
-      font-size:18px;
-      font-weight:900;
-      cursor:pointer;
-      user-select:none;
-      transition:.15s ease;
-    }
-
-    .wheelChip:hover{
-      transform:translateY(-1px);
-    }
-
-    .wheelChip.active{
-      background:linear-gradient(135deg,#2957d3,#4d7df8);
-      color:#fff;
-      border-color:#2957d3;
-      box-shadow:0 8px 16px rgba(41,87,211,.18);
-    }
-
-    .wheelValue{
-      margin-top:8px;
-      text-align:center;
-      font-weight:900;
-      color:#1f3f9a;
-    }
-
     .quizBox{
       margin-top:10px;
       border:1px solid var(--line);
@@ -730,6 +674,7 @@
       .cardLandscape{min-height:auto}
       .ranking,.history{max-height:none}
       .personButtons{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
+      .entryFields{grid-template-columns:1fr}
     }
 
     @media (max-width:760px){
@@ -739,7 +684,6 @@
       .logoBox,.headerSpacer{width:64px;height:64px}
       .nav button{flex:1 1 160px}
       .signature{position:static;display:inline-block;margin-top:12px}
-      .wheelChip{min-width:68px;font-size:16px}
     }
   </style>
 </head>
@@ -780,6 +724,16 @@
           <div class="prepareGrid">
             <div class="prepareSubCard">
               <div id="blockIndividual">
+                <div class="compactOptions">
+                  <label class="checkboxRow">
+                    <input type="checkbox" id="individualSeriesLimitCheckbox">
+                    Limiter le nombre de séries à
+                  </label>
+                  <div class="field" style="max-width:140px;">
+                    <input type="number" id="individualSeriesLimitValue" min="1" step="1" value="3">
+                  </div>
+                </div>
+
                 <div class="listBox" id="individualList"></div>
                 <div class="row" style="margin-top:6px;">
                   <button class="ghost" id="addIndividualBtn" type="button">+ Ajouter un élève</button>
@@ -802,6 +756,14 @@
                     <input type="checkbox" id="securityQuestionsCheckbox">
                     Connaissances sur les machines
                   </label>
+
+                  <label class="checkboxRow">
+                    <input type="checkbox" id="teamSeriesLimitCheckbox">
+                    Limiter le nombre de séries à
+                  </label>
+                  <div class="field" style="max-width:140px;">
+                    <input type="number" id="teamSeriesLimitValue" min="1" step="1" value="3">
+                  </div>
                 </div>
 
                 <div class="listBox" id="teamList"></div>
@@ -838,21 +800,14 @@
               <div class="challengeMachineGrid" id="challengeMachineGrid"></div>
             </div>
 
-            <div class="pickerGrid">
-              <div class="pickerBox">
-                <label class="smallText">Nombre de répétitions</label>
-                <div class="horizontalWheelWrap">
-                  <div class="horizontalWheel" id="repsWheel"></div>
-                </div>
-                <div class="wheelValue" id="entryRepsValue">10 répétitions</div>
+            <div class="entryFields">
+              <div class="field">
+                <label>Nombre de répétitions</label>
+                <input type="number" id="entryReps" min="1" step="1" value="10">
               </div>
-
-              <div class="pickerBox">
-                <label class="smallText">Charge soulevée (kg)</label>
-                <div class="horizontalWheelWrap">
-                  <div class="horizontalWheel" id="loadWheel"></div>
-                </div>
-                <div class="wheelValue" id="entryLoadValue">20 kg</div>
+              <div class="field">
+                <label>Charge soulevée (kg)</label>
+                <input type="number" id="entryLoad" min="1" max="200" step="1" value="20">
               </div>
             </div>
 
@@ -926,7 +881,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v10_pwa";
+    const STORAGE_KEY = "hippopogramme_v11_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
 
     const animals = [
@@ -982,15 +937,12 @@
     let typingTimer = null;
     let pendingResult = null;
     let machineQuestions = {};
-    let currentReps = 10;
-    let currentLoad = 20;
     const el = {};
 
     document.addEventListener("DOMContentLoaded", init);
 
     async function init(){
       cache();
-      buildHorizontalWheels();
       await loadMachineQuestions();
       bind();
       renderAnimals();
@@ -1008,26 +960,15 @@
         "machineGrid",
         "personButtons",
         "emptySelection","entrySection","selectedName","selectedMeta",
-        "entryRepsValue","entryLoadValue","entryTotal",
+        "entryReps","entryLoad","entryTotal",
         "saveResult","cancelSelection","undoLastAction",
         "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
         "personHistory","ranking","statsTable","exportPng",
         "challengeMachineGrid","individualList","addIndividualBtn",
         "balanceTeamsCheckbox","balanceInfo","securityQuestionsCheckbox",
-        "quizContainer","repsWheel","loadWheel"
+        "quizContainer","individualSeriesLimitCheckbox","individualSeriesLimitValue",
+        "teamSeriesLimitCheckbox","teamSeriesLimitValue"
       ].forEach(id => el[id] = document.getElementById(id));
-    }
-
-    function buildHorizontalWheels(){
-      el.repsWheel.innerHTML = Array.from({length:100}, (_,i)=>`
-        <div class="wheelChip ${i+1===10 ? "active" : ""}" data-wheel="reps" data-value="${i+1}">${i+1}</div>
-      `).join("");
-
-      el.loadWheel.innerHTML = Array.from({length:200}, (_,i)=>`
-        <div class="wheelChip ${i+1===20 ? "active" : ""}" data-wheel="load" data-value="${i+1}">${i+1}</div>
-      `).join("");
-
-      updateWheelDisplays();
     }
 
     async function loadMachineQuestions(){
@@ -1090,6 +1031,28 @@
         saveState();
       });
 
+      el.individualSeriesLimitCheckbox.addEventListener("change", ()=>{
+        state.individualSeriesLimitEnabled = !!el.individualSeriesLimitCheckbox.checked;
+        saveState();
+      });
+
+      el.individualSeriesLimitValue.addEventListener("input", ()=>{
+        state.individualSeriesLimitValue = sanitizePositiveInt(el.individualSeriesLimitValue.value, 3);
+        el.individualSeriesLimitValue.value = state.individualSeriesLimitValue;
+        delayedSave();
+      });
+
+      el.teamSeriesLimitCheckbox.addEventListener("change", ()=>{
+        state.teamSeriesLimitEnabled = !!el.teamSeriesLimitCheckbox.checked;
+        saveState();
+      });
+
+      el.teamSeriesLimitValue.addEventListener("input", ()=>{
+        state.teamSeriesLimitValue = sanitizePositiveInt(el.teamSeriesLimitValue.value, 3);
+        el.teamSeriesLimitValue.value = state.teamSeriesLimitValue;
+        delayedSave();
+      });
+
       el.machineGrid.addEventListener("click", (e)=>{
         const card = e.target.closest(".machineCard");
         if(!card) return;
@@ -1119,19 +1082,16 @@
         renderChallengeMachinePicker();
       });
 
-      document.addEventListener("click", (e)=>{
-        const chip = e.target.closest(".wheelChip");
-        if(!chip) return;
-        const value = parseInt(chip.dataset.value, 10);
-        if(chip.dataset.wheel === "reps"){
-          currentReps = value;
-        } else {
-          currentLoad = value;
-        }
-        updateWheelActiveStates();
-        updateWheelDisplays();
-        chip.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
-      });
+      const updateCalc = ()=>{
+        const reps = sanitizePositiveInt(el.entryReps.value, 10);
+        const load = sanitizeBoundedInt(el.entryLoad.value, 20, 1, 200);
+        el.entryReps.value = reps;
+        el.entryLoad.value = load;
+        el.entryTotal.textContent = formatKg(reps * load);
+      };
+
+      el.entryReps.addEventListener("input", updateCalc);
+      el.entryLoad.addEventListener("input", updateCalc);
 
       el.saveResult.addEventListener("click", ()=>{
         if(!selectedPersonId) return;
@@ -1139,8 +1099,8 @@
         if(!person) return;
 
         const machineId = selectedMachineId;
-        const reps = Math.max(0, currentReps);
-        const load = Math.max(0, currentLoad);
+        const reps = sanitizePositiveInt(el.entryReps.value, 10);
+        const load = sanitizeBoundedInt(el.entryLoad.value, 20, 1, 200);
         const total = reps * load;
 
         if(!machineId){
@@ -1149,6 +1109,12 @@
         }
         if(reps <= 0){
           alert("Indiquer un nombre de répétitions supérieur à 0.");
+          return;
+        }
+
+        const seriesLimit = getSeriesLimit();
+        if(seriesLimit.enabled && (person.results || []).length >= seriesLimit.value){
+          alert(`Nombre maximum de séries atteint : ${seriesLimit.value}.`);
           return;
         }
 
@@ -1194,29 +1160,43 @@
         selectedPersonId = null;
         selectedMachineId = null;
         pendingResult = null;
+        hideQuiz();
         renderAll();
       });
 
       el.exportPng.addEventListener("click", exportResultsAsPng);
+      updateCalc();
     }
 
-    function updateWheelActiveStates(){
-      document.querySelectorAll('.wheelChip[data-wheel="reps"]').forEach(chip=>{
-        chip.classList.toggle("active", parseInt(chip.dataset.value,10) === currentReps);
-      });
-      document.querySelectorAll('.wheelChip[data-wheel="load"]').forEach(chip=>{
-        chip.classList.toggle("active", parseInt(chip.dataset.value,10) === currentLoad);
-      });
+    function sanitizePositiveInt(value, fallback){
+      const n = parseInt(value, 10);
+      if (Number.isNaN(n) || n < 1) return fallback;
+      return n;
     }
 
-    function updateWheelDisplays(){
-      el.entryRepsValue.textContent = `${currentReps} répétitions`;
-      el.entryLoadValue.textContent = `${currentLoad} kg`;
-      el.entryTotal.textContent = formatKg(currentReps * currentLoad);
+    function sanitizeBoundedInt(value, fallback, min, max){
+      let n = parseInt(value, 10);
+      if (Number.isNaN(n)) n = fallback;
+      if (n < min) n = min;
+      if (n > max) n = max;
+      return n;
+    }
+
+    function getSeriesLimit(){
+      if(state.mode === "individual"){
+        return {
+          enabled: !!state.individualSeriesLimitEnabled,
+          value: sanitizePositiveInt(state.individualSeriesLimitValue, 3)
+        };
+      }
+      return {
+        enabled: !!state.teamSeriesLimitEnabled,
+        value: sanitizePositiveInt(state.teamSeriesLimitValue, 3)
+      };
     }
 
     function syncTeamCount(){
-      const count = Math.max(1, Math.min(12, parseInt(el.teamCount.value || "1", 10)));
+      const count = sanitizeBoundedInt(el.teamCount.value, 2, 1, 12);
       el.teamCount.value = String(count);
       const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#14b8a6","#84cc16","#f97316","#64748b","#06b6d4","#e11d48"];
 
@@ -1238,10 +1218,6 @@
       selectedPersonId = null;
       selectedMachineId = null;
       pendingResult = null;
-      currentReps = 10;
-      currentLoad = 20;
-      updateWheelActiveStates();
-      updateWheelDisplays();
       saveState();
       renderAll();
       showPage("home");
@@ -1275,6 +1251,10 @@
         mode:"individual",
         balanceTeams:false,
         securityQuestionsEnabled:false,
+        individualSeriesLimitEnabled:false,
+        individualSeriesLimitValue:3,
+        teamSeriesLimitEnabled:false,
+        teamSeriesLimitValue:3,
         individuals:[
           {id:"ind_1_"+uid(), name:"Élève 1", results:[]},
           {id:"ind_2_"+uid(), name:"Élève 2", results:[]},
@@ -1318,6 +1298,10 @@
         mode: s?.mode === "team" ? "team" : "individual",
         balanceTeams: !!s?.balanceTeams,
         securityQuestionsEnabled: !!s?.securityQuestionsEnabled,
+        individualSeriesLimitEnabled: !!s?.individualSeriesLimitEnabled,
+        individualSeriesLimitValue: sanitizePositiveInt(s?.individualSeriesLimitValue, 3),
+        teamSeriesLimitEnabled: !!s?.teamSeriesLimitEnabled,
+        teamSeriesLimitValue: sanitizePositiveInt(s?.teamSeriesLimitValue, 3),
         individuals: Array.isArray(s?.individuals) ? s.individuals.map(p=>({
           id:p.id || uid(),
           name:p.name || "Élève",
@@ -1382,7 +1366,7 @@
       document.getElementById("animalScale").innerHTML = animals.map(a=>`
         <div class="animalItem">
           <strong>${a.icon ? a.icon + " " : ""}${a.name}</strong>
-          <div class="muted">${(Math.round((a.weight||0)*10)/10).toLocaleString("fr-FR")} kg</div>
+          <div class="muted">${formatKg(a.weight)}</div>
         </div>
       `).join("");
     }
@@ -1396,6 +1380,10 @@
       el.teamCount.value = state.teams.length || 2;
       el.balanceTeamsCheckbox.checked = !!state.balanceTeams;
       el.securityQuestionsCheckbox.checked = !!state.securityQuestionsEnabled;
+      el.individualSeriesLimitCheckbox.checked = !!state.individualSeriesLimitEnabled;
+      el.individualSeriesLimitValue.value = state.individualSeriesLimitValue;
+      el.teamSeriesLimitCheckbox.checked = !!state.teamSeriesLimitEnabled;
+      el.teamSeriesLimitValue.value = state.teamSeriesLimitValue;
     }
 
     function renderIndividuals(){
@@ -1655,7 +1643,11 @@
         selectedMachineId = availableMachines[0]?.id || null;
       }
 
-      updateWheelDisplays();
+      const reps = sanitizePositiveInt(el.entryReps.value, 10);
+      const load = sanitizeBoundedInt(el.entryLoad.value, 20, 1, 200);
+      el.entryReps.value = reps;
+      el.entryLoad.value = load;
+      el.entryTotal.textContent = formatKg(reps * load);
 
       if(!selected){
         el.emptySelection.style.display = "block";
@@ -1750,6 +1742,14 @@
       const person = findPerson(pendingResult.personId);
       if(!person) return;
 
+      const seriesLimit = getSeriesLimit();
+      if(seriesLimit.enabled && (person.results || []).length >= seriesLimit.value){
+        pendingResult = null;
+        hideQuiz();
+        alert(`Nombre maximum de séries atteint : ${seriesLimit.value}.`);
+        return;
+      }
+
       const result = {...pendingResult.result};
       result.securityApplied = true;
       result.securityCorrect = correct;
@@ -1763,6 +1763,19 @@
       hideQuiz();
       saveState();
       renderAll();
+    }
+
+    function getSeriesLimit(){
+      if(state.mode === "individual"){
+        return {
+          enabled: !!state.individualSeriesLimitEnabled,
+          value: sanitizePositiveInt(state.individualSeriesLimitValue, 3)
+        };
+      }
+      return {
+        enabled: !!state.teamSeriesLimitEnabled,
+        value: sanitizePositiveInt(state.teamSeriesLimitValue, 3)
+      };
     }
 
     function getTeamRawTotal(team){

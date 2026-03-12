@@ -37,6 +37,14 @@ Les questions sont dans le fichier `machine-questions.json` à la racine du dép
 
 Tu peux les modifier directement sans toucher au fichier HTML.
 
+## Limitation du nombre de séries
+
+Tu peux maintenant définir :
+- une limitation pour le challenge individuel
+- une limitation pour le challenge collectif
+
+Si l’option est cochée, l’application bloque les saisies au-delà du nombre indiqué.
+
 ## Déploiement GitHub Pages
 
 1. Créer un dépôt GitHub.
