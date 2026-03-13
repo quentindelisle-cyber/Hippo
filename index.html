@@ -261,6 +261,31 @@
       box-shadow:0 8px 18px rgba(41,87,211,.20);
     }
 
+    .choiceButtons{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+
+    .choiceBtn{
+      min-width:46px;
+      padding:8px 10px;
+      border-radius:10px;
+      background:#ffffff;
+      border:1px solid #d6e0ee;
+      color:#1f3b82;
+      font-weight:900;
+      box-shadow:none;
+    }
+
+    .choiceBtn.active{
+      background:linear-gradient(135deg,#2957d3,#4d7df8);
+      color:#fff;
+      border-color:#2957d3;
+      box-shadow:0 8px 18px rgba(41,87,211,.20);
+    }
+
     .prepareGrid{
       display:grid;
       grid-template-columns:1.05fr .95fr;
@@ -746,9 +771,9 @@
               </div>
 
               <div id="blockTeams" style="display:none;">
-                <div class="field" style="max-width:180px;">
+                <div class="field">
                   <label>Nombre d’équipes</label>
-                  <input type="number" id="teamCount" min="1" max="12" value="2">
+                  <div class="choiceButtons" id="teamCountButtons"></div>
                 </div>
 
                 <div class="compactOptions">
@@ -886,7 +911,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v14_pwa";
+    const STORAGE_KEY = "hippopogramme_v15_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
 
     const animals = [
@@ -966,9 +991,7 @@
         "navHome","navPrepare","navChallenge","resetBtn",
         "btnModeIndividual","btnModeTeam",
         "blockIndividual","blockTeams",
-        "teamCount","teamList",
-        "machineGrid",
-        "personButtons",
+        "teamList","machineGrid","personButtons",
         "emptySelection","entrySection","selectedName","selectedMeta",
         "entryReps","entryLoad","entryTotal",
         "saveResult","cancelSelection","undoLastAction",
@@ -977,7 +1000,8 @@
         "challengeMachineGrid","individualList","addIndividualBtn",
         "balanceTeamsCheckbox","securityQuestionsCheckbox",
         "quizContainer","individualSeriesLimitCheckbox","individualSeriesLimitValue",
-        "teamSeriesLimitCheckbox","teamSeriesLimitValue"
+        "teamSeriesLimitCheckbox","teamSeriesLimitValue",
+        "teamCountButtons"
       ].forEach(id => el[id] = document.getElementById(id));
     }
 
@@ -1020,12 +1044,12 @@
         renderAll();
       });
 
-      el.teamCount.addEventListener("input", ()=>{
-        delayedSave();
-      });
-
-      el.teamCount.addEventListener("blur", ()=>{
-        syncTeamCount();
+      el.teamCountButtons.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".choiceBtn");
+        if(!btn) return;
+        const count = parseInt(btn.dataset.teamCount, 10);
+        if(Number.isNaN(count)) return;
+        setTeamCount(count);
       });
 
       el.addIndividualBtn.addEventListener("click", ()=>{
@@ -1258,24 +1282,29 @@
       };
     }
 
-    function syncTeamCount(){
-      const count = sanitizeBoundedIntFinal(el.teamCount.value, 2, 1, 12);
-      el.teamCount.value = String(count);
+    function setTeamCount(count){
+      const safeCount = Math.max(1, Math.min(6, count));
+      const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899"];
 
-      const palette = ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#14b8a6","#84cc16","#f97316","#64748b","#06b6d4","#e11d48"];
-
-      while(state.teams.length < count){
+      while(state.teams.length < safeCount){
         const idx = state.teams.length;
         state.teams.push(makeTeam(idx+1, `Équipe ${idx+1}`, palette[idx % palette.length], 3));
       }
 
-      while(state.teams.length > count){
+      while(state.teams.length > safeCount){
         const removed = state.teams.pop();
         if(removed && removed.students.some(s=>s.id===selectedPersonId)) selectedPersonId = null;
       }
 
       saveState();
       renderAll();
+    }
+
+    function renderTeamCountButtons(){
+      const current = Math.max(1, Math.min(6, state.teams.length || 2));
+      el.teamCountButtons.innerHTML = [1,2,3,4,5,6].map(n=>`
+        <button type="button" class="choiceBtn ${n===current ? "active" : ""}" data-team-count="${n}">${n}</button>
+      `).join("");
     }
 
     function resetAll(){
@@ -1373,10 +1402,10 @@
           name:p.name || "Élève",
           results:Array.isArray(p.results) ? p.results : []
         })) : d.individuals,
-        teams: Array.isArray(s?.teams) ? s.teams.map((t,ti)=>({
+        teams: Array.isArray(s?.teams) && s.teams.length ? s.teams.map((t,ti)=>({
           id:t.id || uid(),
           name:t.name || ("Équipe "+(ti+1)),
-          color:t.color || "#3b82f6",
+          color:t.color || ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899"][ti % 6],
           students:Array.isArray(t.students) ? t.students.map((p,pi)=>({
             id:p.id || uid(),
             name:p.name || ("Élève "+(pi+1)),
@@ -1417,6 +1446,7 @@
     function renderAll(){
       renderAnimals();
       renderPrepareMode();
+      renderTeamCountButtons();
       renderIndividuals();
       renderTeams();
       renderMachines();
@@ -1442,7 +1472,6 @@
       el.btnModeTeam.classList.toggle("selected", !individual);
       el.blockIndividual.style.display = individual ? "block" : "none";
       el.blockTeams.style.display = individual ? "none" : "block";
-      el.teamCount.value = state.teams.length || 2;
       el.balanceTeamsCheckbox.checked = !!state.balanceTeams;
       el.securityQuestionsCheckbox.checked = !!state.securityQuestionsEnabled;
       el.individualSeriesLimitCheckbox.checked = !!state.individualSeriesLimitEnabled;
@@ -1569,6 +1598,9 @@
       el.teamList.querySelectorAll("[data-remove-team]").forEach(btn=>{
         btn.addEventListener("click", ()=>{
           state.teams = state.teams.filter(t=>t.id !== btn.dataset.removeTeam);
+          if(state.teams.length === 0){
+            state.teams.push(makeTeam(1,"Équipe 1","#3b82f6",3));
+          }
           saveState();
           renderAll();
         });
