@@ -476,7 +476,7 @@
       aspect-ratio:1 / 1;
       text-align:center;
       border:2px solid transparent;
-      color:#fff;
+      color:#111827;
       border-radius:14px;
       padding:8px;
       display:flex;
@@ -488,13 +488,22 @@
       box-shadow:0 6px 14px rgba(0,0,0,.10);
     }
 
+    .personBtn.darkText{
+      color:#111827;
+    }
+
+    .personBtn.lightText{
+      color:#f8fafc;
+    }
+
     .personBtn.active{
       border-color:#111827;
       box-shadow:0 0 0 3px rgba(17,24,39,.10);
     }
 
     .personBtn.individual{
-      background:linear-gradient(135deg,#64748b,#475569);
+      background:linear-gradient(135deg,#cbd5e1,#94a3b8);
+      color:#111827;
     }
 
     .empty{
@@ -850,7 +859,6 @@
                 <div class="valueChoiceWrap">
                   <div class="choiceButtons" id="repsButtons"></div>
                   <div class="manualInline">
-                    <span class="smallText">Au-delà de 15 :</span>
                     <input type="number" id="entryRepsManual" min="1" max="40" step="1" placeholder="autre valeur" inputmode="numeric">
                   </div>
                 </div>
@@ -861,7 +869,6 @@
                 <div class="valueChoiceWrap">
                   <div class="choiceButtons" id="loadButtons"></div>
                   <div class="manualInline">
-                    <span class="smallText">Au-delà de 70 kg :</span>
                     <input type="number" id="entryLoadManual" min="1" max="200" step="1" placeholder="autre valeur" inputmode="numeric">
                   </div>
                 </div>
@@ -906,9 +913,6 @@
         <div class="rankCol card cardLandscape">
           <h3 class="cardTitle">Classement en direct</h3>
           <div class="ranking" id="ranking"></div>
-          <div class="row" style="margin-top:10px;">
-            <button class="success" id="exportPng" type="button">Mémoriser les résultats</button>
-          </div>
         </div>
       </div>
 
@@ -938,7 +942,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v16_pwa";
+    const STORAGE_KEY = "hippopogramme_v17_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
 
     const REP_PRESETS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
@@ -1000,7 +1004,6 @@
     let state = loadState();
     let selectedPersonId = null;
     let selectedMachineId = null;
-    let typingTimer = null;
     let pendingResult = null;
     let machineQuestions = {};
     let selectedRepValue = 10;
@@ -1028,7 +1031,7 @@
         "emptySelection","entrySection","selectedName","selectedMeta",
         "entryTotal","saveResult","cancelSelection","undoLastAction",
         "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
-        "personHistory","ranking","statsTable","exportPng",
+        "personHistory","ranking","statsTable",
         "challengeMachineGrid","individualList","addIndividualBtn",
         "balanceTeamsCheckbox","securityQuestionsCheckbox","quizContainer",
         "individualSeriesLimitCheckbox","teamSeriesLimitCheckbox",
@@ -1277,11 +1280,9 @@
         selectedPersonId = null;
         selectedMachineId = null;
         pendingResult = null;
-        hideQuiz();
         renderAll();
       });
 
-      el.exportPng.addEventListener("click", exportResultsAsPng);
       updateCalcPreview();
     }
 
@@ -1304,19 +1305,17 @@
     }
 
     function getRepsValue(){
-      const manual = sanitizeBoundedIntFinal(el.entryRepsManual.value, selectedRepValue, 1, 40);
       const raw = String(el.entryRepsManual.value ?? "").trim();
       if(raw !== ""){
-        return manual;
+        return sanitizeBoundedIntFinal(raw, selectedRepValue, 1, 40);
       }
       return selectedRepValue;
     }
 
     function getLoadValue(){
-      const manual = sanitizeBoundedIntFinal(el.entryLoadManual.value, selectedLoadValue, 1, 200);
       const raw = String(el.entryLoadManual.value ?? "").trim();
       if(raw !== ""){
-        return manual;
+        return sanitizeBoundedIntFinal(raw, selectedLoadValue, 1, 200);
       }
       return selectedLoadValue;
     }
@@ -1522,6 +1521,16 @@
         }
       });
       machineQuestions = normalized;
+    }
+
+    function isDarkColor(hex){
+      const clean = String(hex || "").replace("#","");
+      if(clean.length !== 6) return false;
+      const r = parseInt(clean.slice(0,2),16);
+      const g = parseInt(clean.slice(2,4),16);
+      const b = parseInt(clean.slice(4,6),16);
+      const luminance = (0.299*r + 0.587*g + 0.114*b);
+      return luminance < 150;
     }
 
     function saveState(){
@@ -1774,7 +1783,7 @@
           ...p,
           teamId:null,
           teamName:"Individuel",
-          teamColor:"#64748b"
+          teamColor:"#cbd5e1"
         }));
       }
       return state.teams.flatMap(team => team.students.map(student=>({
@@ -1804,10 +1813,11 @@
       }
 
       el.personButtons.innerHTML = people.map(p=>{
-        const bg = state.mode === "team" ? p.teamColor : "#64748b";
+        const bg = state.mode === "team" ? p.teamColor : "#cbd5e1";
+        const textClass = isDarkColor(bg) ? "lightText" : "darkText";
         return `
           <button
-            class="personBtn ${selectedPersonId===p.id ? "active" : ""} ${state.mode==="individual" ? "individual" : ""}"
+            class="personBtn ${selectedPersonId===p.id ? "active" : ""} ${state.mode==="individual" ? "individual" : ""} ${textClass}"
             data-id="${p.id}"
             type="button"
             style="${state.mode==="team" ? `background:${escapeAttr(bg)};` : ""}"
@@ -2126,57 +2136,6 @@
 
     function uid(){
       return Math.random().toString(36).slice(2,10);
-    }
-
-    function exportResultsAsPng(){
-      const target = document.getElementById("pageChallenge");
-      const width = target.scrollWidth;
-      const height = target.scrollHeight;
-
-      const clone = target.cloneNode(true);
-      clone.style.width = width + "px";
-      clone.style.height = height + "px";
-      clone.style.background = "#ffffff";
-
-      const wrapper = document.createElement("div");
-      wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
-      wrapper.style.width = width + "px";
-      wrapper.style.height = height + "px";
-      wrapper.style.background = "#ffffff";
-      wrapper.appendChild(clone);
-
-      const svg = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-          <foreignObject width="100%" height="100%">${new XMLSerializer().serializeToString(wrapper)}</foreignObject>
-        </svg>
-      `;
-
-      const blob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const img = new Image();
-
-      img.onload = function(){
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0,0,width,height);
-        ctx.drawImage(img,0,0);
-
-        const link = document.createElement("a");
-        link.download = "Hippopogramme_resultats.png";
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-        URL.revokeObjectURL(url);
-      };
-
-      img.onerror = function(){
-        URL.revokeObjectURL(url);
-        alert("La capture d'écran n'a pas pu être générée sur ce navigateur.");
-      };
-
-      img.src = url;
     }
 
     function registerServiceWorker(){
