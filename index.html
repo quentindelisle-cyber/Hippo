@@ -286,6 +286,24 @@
       box-shadow:0 8px 18px rgba(41,87,211,.20);
     }
 
+    .valueChoiceWrap{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:6px;
+    }
+
+    .manualInline{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .manualInline input{
+      width:120px;
+    }
+
     .prepareGrid{
       display:grid;
       grid-template-columns:1.05fr .95fr;
@@ -759,9 +777,7 @@
                     <input type="checkbox" id="individualSeriesLimitCheckbox">
                     Limiter le nombre de séries à
                   </label>
-                  <div class="field" style="max-width:140px;">
-                    <input type="number" id="individualSeriesLimitValue" min="1" step="1" value="3">
-                  </div>
+                  <div class="choiceButtons" id="individualSeriesButtons"></div>
                 </div>
 
                 <div class="listBox" id="individualList"></div>
@@ -791,9 +807,7 @@
                     <input type="checkbox" id="teamSeriesLimitCheckbox">
                     Limiter le nombre de séries à
                   </label>
-                  <div class="field" style="max-width:140px;">
-                    <input type="number" id="teamSeriesLimitValue" min="1" step="1" value="3">
-                  </div>
+                  <div class="choiceButtons" id="teamSeriesButtons"></div>
                 </div>
 
                 <div class="listBox" id="teamList"></div>
@@ -833,11 +847,24 @@
             <div class="entryFields">
               <div class="field">
                 <label>Nombre de répétitions</label>
-                <input type="number" id="entryReps" min="1" max="40" step="1" value="10" inputmode="numeric">
+                <div class="valueChoiceWrap">
+                  <div class="choiceButtons" id="repsButtons"></div>
+                  <div class="manualInline">
+                    <span class="smallText">Au-delà de 15 :</span>
+                    <input type="number" id="entryRepsManual" min="1" max="40" step="1" placeholder="autre valeur" inputmode="numeric">
+                  </div>
+                </div>
               </div>
+
               <div class="field">
                 <label>Charge soulevée (kg)</label>
-                <input type="number" id="entryLoad" min="1" max="200" step="1" value="20" inputmode="numeric">
+                <div class="valueChoiceWrap">
+                  <div class="choiceButtons" id="loadButtons"></div>
+                  <div class="manualInline">
+                    <span class="smallText">Au-delà de 70 kg :</span>
+                    <input type="number" id="entryLoadManual" min="1" max="200" step="1" placeholder="autre valeur" inputmode="numeric">
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -907,12 +934,16 @@
       </div>
     </section>
 
-    <div class="signature">By Quentin Delisle</div>
+    <div class="signature">By Eléonore Barreau, Quentin Delisle et Léa Jovanovic</div>
   </div>
 
   <script>
-    const STORAGE_KEY = "hippopogramme_v15_pwa";
+    const STORAGE_KEY = "hippopogramme_v16_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
+
+    const REP_PRESETS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    const LOAD_PRESETS = [5,10,15,20,25,30,35,40,45,50,55,60,65,70];
+    const SERIES_PRESETS = [1,2,3,4,5,6];
 
     const animals = [
       { name:"Lapin", weight:2, icon:"🐇" },
@@ -972,6 +1003,8 @@
     let typingTimer = null;
     let pendingResult = null;
     let machineQuestions = {};
+    let selectedRepValue = 10;
+    let selectedLoadValue = 20;
     const el = {};
 
     document.addEventListener("DOMContentLoaded", init);
@@ -993,15 +1026,14 @@
         "blockIndividual","blockTeams",
         "teamList","machineGrid","personButtons",
         "emptySelection","entrySection","selectedName","selectedMeta",
-        "entryReps","entryLoad","entryTotal",
-        "saveResult","cancelSelection","undoLastAction",
+        "entryTotal","saveResult","cancelSelection","undoLastAction",
         "currentAnimal","nextAnimal","studentProgressBar","studentProgressText",
         "personHistory","ranking","statsTable","exportPng",
         "challengeMachineGrid","individualList","addIndividualBtn",
-        "balanceTeamsCheckbox","securityQuestionsCheckbox",
-        "quizContainer","individualSeriesLimitCheckbox","individualSeriesLimitValue",
-        "teamSeriesLimitCheckbox","teamSeriesLimitValue",
-        "teamCountButtons"
+        "balanceTeamsCheckbox","securityQuestionsCheckbox","quizContainer",
+        "individualSeriesLimitCheckbox","teamSeriesLimitCheckbox",
+        "teamCountButtons","individualSeriesButtons","teamSeriesButtons",
+        "repsButtons","loadButtons","entryRepsManual","entryLoadManual"
       ].forEach(id => el[id] = document.getElementById(id));
     }
 
@@ -1052,6 +1084,80 @@
         setTeamCount(count);
       });
 
+      el.individualSeriesButtons.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".choiceBtn");
+        if(!btn) return;
+        const value = parseInt(btn.dataset.seriesValue, 10);
+        if(Number.isNaN(value)) return;
+        state.individualSeriesLimitValue = value;
+        saveState();
+        renderSeriesButtons();
+      });
+
+      el.teamSeriesButtons.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".choiceBtn");
+        if(!btn) return;
+        const value = parseInt(btn.dataset.seriesValue, 10);
+        if(Number.isNaN(value)) return;
+        state.teamSeriesLimitValue = value;
+        saveState();
+        renderSeriesButtons();
+      });
+
+      el.repsButtons.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".choiceBtn");
+        if(!btn) return;
+        const value = parseInt(btn.dataset.repValue, 10);
+        if(Number.isNaN(value)) return;
+        selectedRepValue = value;
+        el.entryRepsManual.value = "";
+        renderRepButtons();
+        updateCalcPreview();
+      });
+
+      el.loadButtons.addEventListener("click", (e)=>{
+        const btn = e.target.closest(".choiceBtn");
+        if(!btn) return;
+        const value = parseInt(btn.dataset.loadValue, 10);
+        if(Number.isNaN(value)) return;
+        selectedLoadValue = value;
+        el.entryLoadManual.value = "";
+        renderLoadButtons();
+        updateCalcPreview();
+      });
+
+      el.entryRepsManual.addEventListener("input", ()=>{
+        renderRepButtons();
+        updateCalcPreview();
+      });
+
+      el.entryLoadManual.addEventListener("input", ()=>{
+        renderLoadButtons();
+        updateCalcPreview();
+      });
+
+      el.entryRepsManual.addEventListener("blur", ()=>{
+        const current = getRepsValue();
+        if(current > 15){
+          el.entryRepsManual.value = current;
+        } else {
+          el.entryRepsManual.value = "";
+        }
+        renderRepButtons();
+        updateCalcPreview();
+      });
+
+      el.entryLoadManual.addEventListener("blur", ()=>{
+        const current = getLoadValue();
+        if(current > 70){
+          el.entryLoadManual.value = current;
+        } else {
+          el.entryLoadManual.value = "";
+        }
+        renderLoadButtons();
+        updateCalcPreview();
+      });
+
       el.addIndividualBtn.addEventListener("click", ()=>{
         state.individuals.push({id:"ind_"+uid(), name:"Nouvel élève", results:[]});
         saveState();
@@ -1074,30 +1180,8 @@
         saveState();
       });
 
-      el.individualSeriesLimitValue.addEventListener("input", ()=>{
-        state.individualSeriesLimitValue = sanitizePositiveIntLoose(el.individualSeriesLimitValue.value, 3);
-        delayedSave();
-      });
-
-      el.individualSeriesLimitValue.addEventListener("blur", ()=>{
-        state.individualSeriesLimitValue = sanitizePositiveIntFinal(el.individualSeriesLimitValue.value, 3);
-        el.individualSeriesLimitValue.value = state.individualSeriesLimitValue;
-        saveState();
-      });
-
       el.teamSeriesLimitCheckbox.addEventListener("change", ()=>{
         state.teamSeriesLimitEnabled = !!el.teamSeriesLimitCheckbox.checked;
-        saveState();
-      });
-
-      el.teamSeriesLimitValue.addEventListener("input", ()=>{
-        state.teamSeriesLimitValue = sanitizePositiveIntLoose(el.teamSeriesLimitValue.value, 3);
-        delayedSave();
-      });
-
-      el.teamSeriesLimitValue.addEventListener("blur", ()=>{
-        state.teamSeriesLimitValue = sanitizePositiveIntFinal(el.teamSeriesLimitValue.value, 3);
-        el.teamSeriesLimitValue.value = state.teamSeriesLimitValue;
         saveState();
       });
 
@@ -1130,36 +1214,14 @@
         renderChallengeMachinePicker();
       });
 
-      el.entryReps.addEventListener("input", ()=>{
-        updateCalcPreview();
-      });
-
-      el.entryLoad.addEventListener("input", ()=>{
-        updateCalcPreview();
-      });
-
-      el.entryReps.addEventListener("blur", ()=>{
-        el.entryReps.value = sanitizeBoundedIntFinal(el.entryReps.value, 10, 1, 40);
-        updateCalcPreview();
-      });
-
-      el.entryLoad.addEventListener("blur", ()=>{
-        el.entryLoad.value = sanitizeBoundedIntFinal(el.entryLoad.value, 20, 1, 200);
-        updateCalcPreview();
-      });
-
       el.saveResult.addEventListener("click", ()=>{
         if(!selectedPersonId) return;
         const person = findPerson(selectedPersonId);
         if(!person) return;
 
         const machineId = selectedMachineId;
-        const reps = sanitizeBoundedIntFinal(el.entryReps.value, 10, 1, 40);
-        const load = sanitizeBoundedIntFinal(el.entryLoad.value, 20, 1, 200);
-
-        el.entryReps.value = reps;
-        el.entryLoad.value = load;
-
+        const reps = getRepsValue();
+        const load = getLoadValue();
         const total = reps * load;
 
         if(!machineId){
@@ -1223,29 +1285,11 @@
       updateCalcPreview();
     }
 
-    function sanitizePositiveIntLoose(value, fallback){
-      const trimmed = String(value ?? "").trim();
-      if(trimmed === "") return "";
-      const n = parseInt(trimmed, 10);
-      if (Number.isNaN(n) || n < 1) return fallback;
-      return n;
-    }
-
     function sanitizePositiveIntFinal(value, fallback){
       const trimmed = String(value ?? "").trim();
       if(trimmed === "") return fallback;
       const n = parseInt(trimmed, 10);
       if (Number.isNaN(n) || n < 1) return fallback;
-      return n;
-    }
-
-    function sanitizeBoundedIntLoose(value, fallback, min, max){
-      const trimmed = String(value ?? "").trim();
-      if(trimmed === "") return "";
-      let n = parseInt(trimmed, 10);
-      if (Number.isNaN(n)) return fallback;
-      if (n < min) n = min;
-      if (n > max) n = max;
       return n;
     }
 
@@ -1259,13 +1303,27 @@
       return n;
     }
 
+    function getRepsValue(){
+      const manual = sanitizeBoundedIntFinal(el.entryRepsManual.value, selectedRepValue, 1, 40);
+      const raw = String(el.entryRepsManual.value ?? "").trim();
+      if(raw !== ""){
+        return manual;
+      }
+      return selectedRepValue;
+    }
+
+    function getLoadValue(){
+      const manual = sanitizeBoundedIntFinal(el.entryLoadManual.value, selectedLoadValue, 1, 200);
+      const raw = String(el.entryLoadManual.value ?? "").trim();
+      if(raw !== ""){
+        return manual;
+      }
+      return selectedLoadValue;
+    }
+
     function updateCalcPreview(){
-      const repsRaw = sanitizeBoundedIntLoose(el.entryReps.value, 10, 1, 40);
-      const loadRaw = sanitizeBoundedIntLoose(el.entryLoad.value, 20, 1, 200);
-
-      const reps = repsRaw === "" ? 0 : repsRaw;
-      const load = loadRaw === "" ? 0 : loadRaw;
-
+      const reps = getRepsValue();
+      const load = getLoadValue();
       el.entryTotal.textContent = formatKg(reps * load);
     }
 
@@ -1307,12 +1365,44 @@
       `).join("");
     }
 
+    function renderSeriesButtons(){
+      const indivCurrent = sanitizePositiveIntFinal(state.individualSeriesLimitValue, 3);
+      el.individualSeriesButtons.innerHTML = SERIES_PRESETS.map(n=>`
+        <button type="button" class="choiceBtn ${n===indivCurrent ? "active" : ""}" data-series-value="${n}">${n}</button>
+      `).join("");
+
+      const teamCurrent = sanitizePositiveIntFinal(state.teamSeriesLimitValue, 3);
+      el.teamSeriesButtons.innerHTML = SERIES_PRESETS.map(n=>`
+        <button type="button" class="choiceBtn ${n===teamCurrent ? "active" : ""}" data-series-value="${n}">${n}</button>
+      `).join("");
+    }
+
+    function renderRepButtons(){
+      const manualRaw = String(el.entryRepsManual.value ?? "").trim();
+      const current = manualRaw !== "" ? sanitizeBoundedIntFinal(manualRaw, selectedRepValue, 1, 40) : selectedRepValue;
+
+      el.repsButtons.innerHTML = REP_PRESETS.map(n=>`
+        <button type="button" class="choiceBtn ${manualRaw === "" && n===current ? "active" : ""}" data-rep-value="${n}">${n}</button>
+      `).join("");
+    }
+
+    function renderLoadButtons(){
+      const manualRaw = String(el.entryLoadManual.value ?? "").trim();
+      const current = manualRaw !== "" ? sanitizeBoundedIntFinal(manualRaw, selectedLoadValue, 1, 200) : selectedLoadValue;
+
+      el.loadButtons.innerHTML = LOAD_PRESETS.map(n=>`
+        <button type="button" class="choiceBtn ${manualRaw === "" && n===current ? "active" : ""}" data-load-value="${n}">${n}</button>
+      `).join("");
+    }
+
     function resetAll(){
       if(!confirm("Réinitialiser toutes les données ?")) return;
       state = defaultState();
       selectedPersonId = null;
       selectedMachineId = null;
       pendingResult = null;
+      selectedRepValue = 10;
+      selectedLoadValue = 20;
       saveState();
       renderAll();
       showPage("home");
@@ -1438,15 +1528,13 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    function delayedSave(){
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(()=>saveState(), 250);
-    }
-
     function renderAll(){
       renderAnimals();
       renderPrepareMode();
       renderTeamCountButtons();
+      renderSeriesButtons();
+      renderRepButtons();
+      renderLoadButtons();
       renderIndividuals();
       renderTeams();
       renderMachines();
@@ -1475,9 +1563,7 @@
       el.balanceTeamsCheckbox.checked = !!state.balanceTeams;
       el.securityQuestionsCheckbox.checked = !!state.securityQuestionsEnabled;
       el.individualSeriesLimitCheckbox.checked = !!state.individualSeriesLimitEnabled;
-      el.individualSeriesLimitValue.value = state.individualSeriesLimitValue;
       el.teamSeriesLimitCheckbox.checked = !!state.teamSeriesLimitEnabled;
-      el.teamSeriesLimitValue.value = state.teamSeriesLimitValue;
     }
 
     function renderIndividuals(){
@@ -1497,10 +1583,10 @@
           const p = state.individuals.find(x=>x.id===inp.dataset.personId);
           if(p){
             p.name = inp.value;
-            delayedSave();
           }
         });
         inp.addEventListener("blur", ()=>{
+          saveState();
           renderPeople();
           renderStatsTable();
         });
@@ -1556,10 +1642,10 @@
           const t = state.teams.find(x=>x.id===inp.dataset.teamName);
           if(t){
             t.name = inp.value;
-            delayedSave();
           }
         });
         inp.addEventListener("blur", ()=>{
+          saveState();
           renderPeople();
           renderRanking();
           renderStatsTable();
@@ -1586,10 +1672,10 @@
           const student = team?.students.find(s=>s.id===studentId);
           if(student){
             student.name = inp.value;
-            delayedSave();
           }
         });
         inp.addEventListener("blur", ()=>{
+          saveState();
           renderPeople();
           renderStatsTable();
         });
@@ -1740,6 +1826,8 @@
         selectedMachineId = availableMachines[0]?.id || null;
       }
 
+      renderRepButtons();
+      renderLoadButtons();
       updateCalcPreview();
 
       if(!selected){
@@ -1856,19 +1944,6 @@
       hideQuiz();
       saveState();
       renderAll();
-    }
-
-    function getSeriesLimit(){
-      if(state.mode === "individual"){
-        return {
-          enabled: !!state.individualSeriesLimitEnabled,
-          value: sanitizePositiveIntFinal(state.individualSeriesLimitValue, 3)
-        };
-      }
-      return {
-        enabled: !!state.teamSeriesLimitEnabled,
-        value: sanitizePositiveIntFinal(state.teamSeriesLimitValue, 3)
-      };
     }
 
     function formatKg(n){
