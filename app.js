@@ -1,1089 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hippopogramme</title>
 
-  <meta name="theme-color" content="#2957d3" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Hippopogramme" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-
-  <style>
-    :root{
-      --bg1:#edf4ff;
-      --bg2:#f8fbff;
-      --card:#ffffff;
-      --line:#d6e0ee;
-      --text:#172033;
-      --muted:#66758f;
-      --primary:#7c3aed;
-      --primary2:#8b5cf6;
-      --orange:#f59e0b;
-      --orange2:#fbbf24;
-      --green:#16a34a;
-      --green2:#22c55e;
-      --success:#0ea66c;
-      --danger:#dc2626;
-      --warning:#f59e0b;
-      --shadow:0 12px 28px rgba(18,34,66,.10);
-      --radius:18px;
-    }
-
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      padding:0;
-      font-family:Arial, Helvetica, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(77,125,248,.14), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(14,166,108,.10), transparent 28%),
-        linear-gradient(180deg,var(--bg1),var(--bg2));
-      min-height:100vh;
-    }
-
-    .app{
-      max-width:1500px;
-      margin:0 auto;
-      padding:12px 12px 22px;
-    }
-
-    .header{
-      display:grid;
-      grid-template-columns:76px 1fr 222px;
-      align-items:center;
-      gap:12px;
-      background:linear-gradient(135deg,#ffffff 0%, #eef4ff 100%);
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-      padding:12px 16px;
-    }
-
-    .logoBox{
-      width:76px;
-      height:76px;
-      border-radius:18px;
-      overflow:hidden;
-      background:#fff;
-      border:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 6px 16px rgba(0,0,0,.08);
-    }
-
-    .logoBox img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .logoBoxRight{width:222px;height:76px;justify-self:end;}
-
-    .logoBoxRight img{object-fit:contain;width:100%;height:100%;}
-
-    h1{
-      margin:0;
-      text-align:center;
-      font-size:clamp(24px,3vw,40px);
-      line-height:1;
-      letter-spacing:.2px;
-    }
-
-    .nav{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin:12px 0;
-    }
-
-    button{
-      border:none;
-      border-radius:13px;
-      padding:10px 14px;
-      font-size:14px;
-      font-weight:800;
-      cursor:pointer;
-      transition:.15s ease;
-    }
-
-    button:hover{transform:translateY(-1px)}
-
-    .btnInterface{
-      background:linear-gradient(135deg,var(--primary),var(--primary2));
-      color:#fff;
-    }
-
-    .btnPrepare{
-      background:linear-gradient(135deg,var(--orange),var(--orange2));
-      color:#fff;
-    }
-
-    .btnChallenge{
-      background:linear-gradient(135deg,var(--green),var(--green2));
-      color:#fff;
-    }
-
-    button.primary{
-      background:linear-gradient(135deg,#2957d3,#4d7df8);
-      color:#fff;
-    }
-
-    button.success{background:#dff8ed;color:#066847}
-    button.danger{background:#fee2e2;color:#991b1b}
-    button.warning{background:#fff2d9;color:#9a6500}
-    button.ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
-    button.small{padding:6px 9px;font-size:12px;border-radius:10px}
-
-    .navBtn.active{
-      box-shadow:0 8px 18px rgba(41,87,211,.24);
-    }
-
-    .page{display:none}
-    .page.active{display:block}
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:10px;
-    }
-
-    .span-12{grid-column:span 12}
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:12px;
-    }
-
-    .cardTitle{
-      margin:0 0 8px;
-      font-size:17px;
-      font-weight:900;
-    }
-
-    .smallText{font-size:12px;color:var(--muted)}
-    .muted{color:var(--muted)}
-
-    .animalScaleCompact{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
-      gap:6px;
-      margin-top:6px;
-    }
-
-    .animalItem{
-      border:1px solid var(--line);
-      border-radius:10px;
-      background:#f8fbff;
-      padding:6px 8px;
-      min-height:54px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-    }
-
-    .animalItem strong{
-      display:block;
-      font-size:13px;
-      margin-bottom:2px;
-      line-height:1.05;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:5px;
-      min-width:110px;
-      flex:1;
-    }
-
-    .field label{
-      font-size:11px;
-      color:var(--muted);
-      font-weight:800;
-    }
-
-    .row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    input,textarea{
-      width:100%;
-      border:1px solid #cfd9ea;
-      background:#fff;
-      border-radius:10px;
-      padding:8px 10px;
-      font-size:14px;
-      outline:none;
-      font-family:Arial, Helvetica, sans-serif;
-    }
-
-    textarea{
-      min-height:70px;
-      resize:vertical;
-    }
-
-    input[type="color"]{
-      min-height:38px;
-      padding:3px;
-      cursor:pointer;
-    }
-
-    .toggle{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .toggle button{
-      min-width:165px;
-      background:#eef3ff;
-      color:#3150b5;
-      border:1px solid #d8e2f7;
-    }
-
-    .toggle button.selected{
-      background:linear-gradient(135deg,#2957d3,#4d7df8);
-      color:#fff;
-      box-shadow:0 8px 18px rgba(41,87,211,.20);
-    }
-
-    .choiceButtons{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:4px;
-    }
-
-    .choiceBtn{
-      min-width:46px;
-      padding:8px 10px;
-      border-radius:10px;
-      background:#ffffff;
-      border:1px solid #d6e0ee;
-      color:#1f3b82;
-      font-weight:900;
-      box-shadow:none;
-    }
-
-    .choiceBtn.active{
-      background:linear-gradient(135deg,#2957d3,#4d7df8);
-      color:#fff;
-      border-color:#2957d3;
-      box-shadow:0 8px 18px rgba(41,87,211,.20);
-    }
-
-    .inputZoneLight,
-    .inputZoneDark{
-      border-radius:14px;
-      padding:10px;
-      border:1px solid var(--line);
-    }
-
-    .inputZoneLight{
-      background:#eef2f7;
-    }
-
-    .inputZoneDark{
-      background:#cfd6df;
-      border-color:#b7c0cc;
-    }
-
-    .valueChoiceWrap{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-top:6px;
-    }
-
-    .manualInline{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .manualInline input{
-      width:120px;
-    }
-
-    .prepareGrid{
-      display:grid;
-      grid-template-columns:1.05fr .95fr;
-      gap:10px;
-      align-items:start;
-    }
-
-    .prepareSubCard{
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fbfdff;
-      padding:10px;
-    }
-
-    .listBox{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      margin-top:6px;
-    }
-
-    .studentBox,.teamBox{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:8px;
-    }
-
-    .studentRow{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:6px;
-      align-items:center;
-    }
-
-    .teamHeader{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom:6px;
-    }
-
-    .colorDot{
-      width:14px;
-      height:14px;
-      border-radius:50%;
-      display:inline-block;
-      border:2px solid rgba(0,0,0,.1);
-      margin-right:6px;
-      vertical-align:middle;
-    }
-
-    .compactOptions{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin:8px 0 0;
-      padding:8px 10px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#f8fbff;
-    }
-
-    .checkboxRow{
-      display:flex;
-      align-items:center;
-      gap:7px;
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .checkboxRow input{
-      width:auto;
-      transform:scale(1.05);
-    }
-
-    .machineGrid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(108px,1fr));
-      gap:6px;
-      margin-top:6px;
-    }
-
-    .machineCard{
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:6px;
-      background:linear-gradient(180deg,#fff 0%, #f7faff 100%);
-      cursor:pointer;
-      transition:.15s ease;
-      min-height:112px;
-      display:flex;
-      flex-direction:column;
-      gap:5px;
-      justify-content:space-between;
-    }
-
-    .machineCard:hover{transform:translateY(-1px)}
-    .machineCard.selected{
-      border:2px solid #2957d3;
-      background:linear-gradient(180deg,#f9fbff 0%, #eaf1ff 100%);
-      box-shadow:0 8px 18px rgba(41,87,211,.12);
-    }
-
-    .machineVisual{
-      height:50px;
-      border-radius:10px;
-      background:#fff;
-      border:1px solid #dbe6f8;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-    }
-
-    .machineVisual img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      display:block;
-      background:#fff;
-    }
-
-    .machineName{
-      font-size:12px;
-      font-weight:900;
-      text-align:center;
-      line-height:1.05;
-      min-height:26px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .machineTag{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:max-content;
-      align-self:center;
-      padding:3px 7px;
-      border-radius:999px;
-      background:#edf4ff;
-      color:#2750c5;
-      border:1px solid #d4e0ff;
-      font-size:10px;
-      font-weight:800;
-    }
-
-    .challengeLayout{
-      display:grid;
-      grid-template-columns:22% 46% 32%;
-      gap:10px;
-      align-items:start;
-    }
-
-    .cardLandscape{min-height:72vh}
-
-    .personButtons{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(92px,1fr));
-      gap:8px;
-      align-items:start;
-    }
-
-    .personBtn{
-      width:100%;
-      aspect-ratio:1 / 1;
-      text-align:center;
-      border:2px solid transparent;
-      color:#111827;
-      border-radius:14px;
-      padding:8px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:15px;
-      font-weight:900;
-      line-height:1.1;
-      box-shadow:0 6px 14px rgba(0,0,0,.10);
-    }
-
-    .personBtn.darkText{
-      color:#111827;
-    }
-
-    .personBtn.lightText{
-      color:#f8fafc;
-    }
-
-    .personBtn.active{
-      border-color:#111827;
-      box-shadow:0 0 0 3px rgba(17,24,39,.10);
-    }
-
-    .personBtnContent{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      width:100%;
-    }
-
-    .personName{
-      display:block;
-    }
-
-    .personMeta{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      flex-wrap:wrap;
-      justify-content:center;
-      font-size:11px;
-      font-weight:900;
-    }
-
-    .personCountBadge{
-      background:rgba(255,255,255,.72);
-      color:#111827;
-      border:1px solid rgba(17,24,39,.14);
-      border-radius:999px;
-      padding:2px 7px;
-    }
-
-    .personLag{
-      background:rgba(220,38,38,.14);
-      color:#7f1d1d;
-      border:1px solid rgba(127,29,29,.16);
-      border-radius:999px;
-      padding:2px 7px;
-    }
-
-    .personBtn.flashLag{
-      animation:flashLag 1s linear infinite;
-    }
-
-    @keyframes flashLag{
-      0%,100%{ box-shadow:0 6px 14px rgba(0,0,0,.10); }
-      50%{ box-shadow:0 0 0 4px rgba(239,68,68,.28), 0 8px 18px rgba(239,68,68,.22); }
-    }
-
-    .personBtn.individual{
-      background:linear-gradient(135deg,#cbd5e1,#94a3b8);
-      color:#111827;
-    }
-
-    .empty{
-      padding:14px;
-      border-radius:12px;
-      border:1px dashed #ccd8ea;
-      background:#fafcff;
-      text-align:center;
-      color:var(--muted);
-    }
-
-    .selectionTitle{
-      font-size:20px;
-      font-weight:900;
-      margin-bottom:5px;
-    }
-
-    .entryFields{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-top:8px;
-    }
-
-    .calcBox{
-      padding:10px;
-      border-radius:14px;
-      background:#f7faff;
-      border:1px solid var(--line);
-      margin-top:10px;
-    }
-
-    .bigCalc{
-      font-size:30px;
-      font-weight:900;
-      margin-top:4px;
-      line-height:1;
-    }
-
-    .animalProgress{
-      margin-top:10px;
-      padding:10px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#ffffff 0%, #f3f8ff 100%);
-      border:1px solid var(--line);
-    }
-
-    .animalHead{
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
-    }
-
-    .animalValue{
-      font-size:18px;
-      font-weight:900;
-    }
-
-    .progress{
-      height:12px;
-      border-radius:999px;
-      overflow:hidden;
-      background:#edf2f8;
-      border:1px solid #dbe4ef;
-    }
-
-    .progress > div{
-      height:100%;
-      width:0%;
-      border-radius:999px;
-      background:linear-gradient(90deg,#22c55e,#3b82f6);
-    }
-
-    .history{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      max-height:22vh;
-      overflow:auto;
-      margin-top:8px;
-    }
-
-    .historyItem{
-      border:1px solid var(--line);
-      background:#fbfdff;
-      border-radius:10px;
-      padding:7px 9px;
-      font-size:12px;
-      line-height:1.35;
-    }
-
-    .ranking{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      max-height:52vh;
-      overflow:auto;
-      padding-right:3px;
-      margin-top:6px;
-    }
-
-    .rankItem{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:12px;
-      padding:8px;
-    }
-
-    .summaryStrip{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-      gap:8px;
-      margin-bottom:8px;
-    }
-
-    .summaryChip{
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#f8fbff;
-      padding:8px 10px;
-    }
-
-    .summaryChip strong{
-      display:block;
-      font-size:18px;
-      margin-top:2px;
-    }
-
-    .rankTop{
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      align-items:center;
-      font-weight:900;
-      margin-bottom:5px;
-      font-size:13px;
-    }
-
-
-    .rankBadge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:26px;
-      font-size:20px;
-      line-height:1;
-      margin-right:6px;
-    }
-
-    .rankNameWrap{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      flex-wrap:wrap;
-    }
-
-    .classTotalBox{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .classAnimalLarge{
-      font-size:42px;
-      line-height:1;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-weight:900;
-    }
-
-    .classAnimalLarge .count{
-      font-size:24px;
-    }
-
-    .statsTable{
-      width:100%;
-      border-collapse:collapse;
-      font-size:12px;
-      margin-top:8px;
-    }
-
-    .statsTable th,
-    .statsTable td{
-      padding:7px 5px;
-      border-bottom:1px solid #e5edf7;
-      text-align:left;
-      vertical-align:top;
-    }
-
-    .statsTable th{
-      font-size:10px;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-
-    .challengeMachineGrid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(102px,1fr));
-      gap:6px;
-      margin-top:6px;
-    }
-
-    .challengeMachineCard{
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:6px;
-      background:#fff;
-      cursor:pointer;
-      transition:.15s ease;
-    }
-
-    .challengeMachineCard.active{
-      border:2px solid #2957d3;
-      background:#eef4ff;
-      box-shadow:0 6px 16px rgba(41,87,211,.12);
-    }
-
-    .challengeMachineThumb{
-      height:58px;
-      border-radius:10px;
-      overflow:hidden;
-      border:1px solid #d9e4f4;
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .challengeMachineThumb img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      display:block;
-    }
-
-    .quizBox{
-      margin-top:10px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fffdf7;
-      padding:10px;
-    }
-
-    .answerGrid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:8px;
-      margin-top:8px;
-    }
-
-    .answerBtn{
-      text-align:left;
-      background:#fff;
-      border:1px solid var(--line);
-      color:var(--text);
-      border-radius:10px;
-      padding:10px 12px;
-    }
-
-    .signature{
-      position:fixed;
-      right:16px;
-      bottom:10px;
-      background:rgba(255,255,255,.82);
-      border:1px solid rgba(203,213,225,.8);
-      backdrop-filter:blur(8px);
-      border-radius:999px;
-      padding:7px 11px;
-      font-size:12px;
-      font-weight:900;
-      color:#475569;
-      z-index:20;
-    }
-
-    @media (max-width:1120px){
-      .prepareGrid{grid-template-columns:1fr}
-      .challengeLayout{grid-template-columns:1fr}
-      .cardLandscape{min-height:auto}
-      .ranking,.history{max-height:none}
-      .personButtons{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
-      .entryFields{grid-template-columns:1fr}
-    }
-
-    
-    .centeredSelection{ text-align:center; width:100%; }
-    .centeredText{ text-align:center; }
-    .centeredLabel{ text-align:center; display:block; width:100%; }
-    .entryLabelTop{ font-size:13px; }
-    .centeredTitle{ text-align:center; }
-    .animalScaleCompact .animalItem{ text-align:center; align-items:center; }
-    .animalIconLine{ font-size:26px; line-height:1; margin-bottom:4px; }
-    .summaryFooter{ margin-top:10px; border-top:1px solid var(--line); padding-top:10px; }
-    .summaryFooter .summaryChip{ width:100%; justify-content:center; text-align:center; }
-    .classAnimalLarge{ display:flex; align-items:center; justify-content:center; gap:12px; margin-top:8px; }
-    .classAnimalIcon{ font-size:44px; line-height:1; }
-    .classAnimalText strong{ display:block; font-size:20px; }
-
-    @media (max-width:760px){
-      .header{
-        grid-template-columns:64px 1fr 188px;
-      }
-      .logoBox{width:64px;height:64px}
-      .logoBoxRight{width:188px;height:64px}
-      .nav button{flex:1 1 160px}
-      .signature{position:static;display:inline-block;margin-top:12px}
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <header class="header">
-      <div class="logoBox">
-        <img src="icon-512.png" alt="Logo N&#39;EPS">
-      </div>
-      <h1>Hippopogramme</h1>
-      <div class="logoBox logoBoxRight">
-        <img src="logo-lycee.png" alt="Logo du lycée">
-      </div>
-    </header>
-
-    <nav class="nav">
-      <button class="navBtn btnInterface active" id="navHome">Interface</button>
-      <button class="navBtn btnPrepare" id="navPrepare">Préparer le challenge</button>
-      <button class="navBtn btnChallenge" id="navChallenge">Faire le challenge</button>
-      <button class="ghost" id="fullscreenBtn">Plein écran</button>
-      <button class="danger" id="resetBtn">Réinitialiser les données</button>
-    </nav>
-
-    <section class="page active" id="pageHome">
-      <div class="card" style="margin-top:8px;">
-        <h3 class="cardTitle">Échelle des mammifères</h3>
-        <div class="animalScaleCompact" id="animalScale"></div>
-      </div>
-    </section>
-
-    <section class="page" id="pagePrepare">
-      <div class="grid">
-        <div class="card span-12">
-          <h3 class="cardTitle">Préparer le Challenge</h3>
-
-          <div class="toggle">
-            <button id="btnModeIndividual" class="selected" type="button">Challenge individuel</button>
-            <button id="btnModeTeam" type="button">Challenge collectif</button>
-          </div>
-
-          <div class="prepareGrid">
-            <div class="prepareSubCard">
-              <div id="blockIndividual">
-                <div class="compactOptions">
-                  <label class="checkboxRow">
-                    <input type="checkbox" id="individualSeriesLimitCheckbox">
-                    Limiter le nombre de séries à
-                  </label>
-                  <div class="choiceButtons" id="individualSeriesButtons"></div>
-                </div>
-
-                <div class="listBox" id="individualList"></div>
-                <div class="row" style="margin-top:6px;">
-                  <button class="ghost" id="addIndividualBtn" type="button">+ Ajouter un élève</button>
-                </div>
-              </div>
-
-              <div id="blockTeams" style="display:none;">
-                <div class="field">
-                  <label>Nombre d’équipes</label>
-                  <div class="choiceButtons" id="teamCountButtons"></div>
-                </div>
-
-                <div class="compactOptions">
-                  <label class="checkboxRow">
-                    <input type="checkbox" id="balanceTeamsCheckbox">
-                    Équilibrer le challenge si nombre d’élèves différent par équipe
-                  </label>
-
-                  <label class="checkboxRow">
-                    <input type="checkbox" id="securityQuestionsCheckbox">
-                    Connaissances sur les machines
-                  </label>
-
-                  <label class="checkboxRow">
-                    <input type="checkbox" id="teamSeriesLimitCheckbox">
-                    Limiter le nombre de séries à
-                  </label>
-                  <div class="choiceButtons" id="teamSeriesButtons"></div>
-                </div>
-
-                <div class="listBox" id="teamList"></div>
-              </div>
-            </div>
-
-            <div class="prepareSubCard">
-              <h4 style="margin:0 0 6px;font-size:14px;font-weight:900;">Machines</h4>
-              <div class="machineGrid" id="machineGrid"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" id="pageChallenge">
-      <div class="challengeLayout">
-        <div class="participantsCol card cardLandscape">
-          <h3 class="cardTitle">Participants</h3>
-          <div class="personButtons" id="personButtons"></div>
-        </div>
-
-        <div class="centerCol card cardLandscape">
-          <h3 class="cardTitle">Saisie du résultat</h3>
-
-          <div class="empty" id="emptySelection">Sélectionner un élève pour commencer.</div>
-
-          <div id="entrySection" style="display:none;">
-            <div class="selectionTitle centeredSelection" id="selectedName"></div>
-            <div class="smallText centeredText" id="selectedMeta" style="margin-bottom:8px;"></div>
-
-            <div>
-              <div class="smallText centeredText entryLabelTop" style="margin-bottom:5px;font-weight:800;">Choisir sa machine</div>
-              <div class="challengeMachineGrid" id="challengeMachineGrid"></div>
-            </div>
-
-            <div class="entryFields">
-              <div class="field">
-                <label class="centeredLabel">Nombre de répétitions</label>
-                <div class="valueChoiceWrap inputZoneLight">
-                  <div class="choiceButtons" id="repsButtons"></div>
-                  <div class="manualInline">
-                    <input type="number" id="entryRepsManual" min="1" max="40" step="1" placeholder="autre valeur" inputmode="numeric">
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <label class="centeredLabel">Charge soulevée</label>
-                <div class="valueChoiceWrap inputZoneDark">
-                  <div class="choiceButtons" id="loadButtons"></div>
-                  <div class="manualInline">
-                    <input type="number" id="entryLoadManual" min="1" max="200" step="1" placeholder="autre valeur" inputmode="numeric">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="calcBox">
-              <div class="smallText">Calcul automatique</div>
-              <div class="bigCalc" id="entryTotal">200 kg</div>
-            </div>
-
-            <div class="row" style="margin-top:10px;">
-              <button class="primary" id="saveResult" type="button">Ajouter la performance</button>
-              <button class="warning" id="undoLastAction" type="button">Supprimer la dernière action saisie</button>
-              <button class="ghost" id="cancelSelection" type="button">Annuler la sélection</button>
-            </div>
-
-            <div id="quizContainer" style="display:none;"></div>
-
-            <div class="animalProgress">
-              <div class="animalHead">
-                <div>
-                  <div class="smallText">Animal atteint</div>
-                  <div class="animalValue" id="currentAnimal">Chat</div>
-                </div>
-                <div style="text-align:right;">
-                  <div class="smallText">Prochain objectif</div>
-                  <div style="font-size:16px;font-weight:900;" id="nextAnimal">Chien</div>
-                </div>
-              </div>
-              <div class="progress"><div id="studentProgressBar"></div></div>
-              <div class="smallText" id="studentProgressText" style="margin-top:6px;"></div>
-            </div>
-
-            <div style="margin-top:10px;">
-              <div class="smallText">Historique de l’élève</div>
-              <div class="history" id="personHistory"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="rankCol card cardLandscape">
-          <h3 class="cardTitle centeredTitle">Classement en direct</h3>
-          <div class="ranking" id="ranking"></div>
-          <div class="summaryStrip" id="rankingSummary"></div>
-        </div>
-      </div>
-
-      <div class="grid" style="margin-top:10px;">
-        <div class="card span-12">
-          <h3 class="cardTitle">Statistiques détaillées</h3>
-          <div style="overflow:auto;">
-            <table class="statsTable" id="statsTable">
-              <thead>
-                <tr>
-                  <th>Équipe</th>
-                  <th>Élève</th>
-                  <th>Total</th>
-                  <th>Animal</th>
-                  <th>Nb saisies</th>
-                  <th>Machines réalisées</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="signature">By Eléonore Barreau, Quentin Delisle et Léa Jovanovic</div>
-  </div>
-
-  <script>
     const STORAGE_KEY = "hippopogramme_v18_pwa";
     const QUESTIONS_URL = "./machine-questions.json";
 
@@ -1106,21 +21,22 @@
       { name:"Zèbre", weight:320, icon:"🦓" },
       { name:"Cheval", weight:500, icon:"🐎" },
       { name:"Bison", weight:700, icon:"🦬" },
+      { name:"Tapir", weight:900, icon:"🦛" },
       { name:"Girafe", weight:1200, icon:"🦒" },
       { name:"Morse", weight:1600, icon:"🦭" },
       { name:"Buffle d'eau", weight:2000, icon:"🐃" },
       { name:"Rhinocéros", weight:2300, icon:"🦏" },
       { name:"Hippopotame", weight:3000, icon:"🦛" },
       { name:"Éléphant", weight:6000, icon:"🐘" },
-      { name:"2 éléphants", weight:12000, icon:"" },
-      { name:"3 éléphants", weight:18000, icon:"" },
-      { name:"4 éléphants", weight:24000, icon:"" },
-      { name:"5 éléphants", weight:30000, icon:"" },
-      { name:"6 éléphants", weight:36000, icon:"" },
-      { name:"7 éléphants", weight:42000, icon:"" },
-      { name:"8 éléphants", weight:48000, icon:"" },
-      { name:"9 éléphants", weight:54000, icon:"" },
-      { name:"10 éléphants", weight:60000, icon:"" },
+      { name:"2 éléphants", weight:12000, icon:"🐘", count:2 },
+      { name:"3 éléphants", weight:18000, icon:"🐘", count:3 },
+      { name:"4 éléphants", weight:24000, icon:"🐘", count:4 },
+      { name:"5 éléphants", weight:30000, icon:"🐘", count:5 },
+      { name:"6 éléphants", weight:36000, icon:"🐘", count:6 },
+      { name:"7 éléphants", weight:42000, icon:"🐘", count:7 },
+      { name:"8 éléphants", weight:48000, icon:"🐘", count:8 },
+      { name:"9 éléphants", weight:54000, icon:"🐘", count:9 },
+      { name:"10 éléphants", weight:60000, icon:"🐘", count:10 },
       { name:"Baleine bleue", weight:120000, icon:"🐋" }
     ].sort((a,b)=>a.weight-b.weight);
 
@@ -1735,10 +651,24 @@
       saveState();
     }
 
+    function animalIconMarkup(animal, big=false){
+      if(!animal) return "";
+      if(animal.count && animal.icon){
+        return `<span class="animalCount">${animal.count}</span> <span>${animal.icon}</span>`;
+      }
+      return animal.icon || "";
+    }
+
+    function animalLabel(animal){
+      if(!animal) return "—";
+      return `${animalIconMarkup(animal)} ${animal.name}`.trim();
+    }
+
     function renderAnimals(){
       document.getElementById("animalScale").innerHTML = animals.map(a=>`
         <div class="animalItem">
-          <strong>${a.icon ? a.icon + " " : ""}${a.name}</strong>
+          <div class="animalIconLine">${animalIconMarkup(a)}</div>
+          <strong>${a.name}</strong>
           <div class="muted">${formatKg(a.weight)}</div>
         </div>
       `).join("");
@@ -1913,19 +843,31 @@
       return [...new Set(arr.filter(Boolean))];
     }
 
+    function toHashUnicode(str){
+      return Array.from(str).map(ch=>{
+        const code = ch.charCodeAt(0);
+        return code > 127 ? `#U${code.toString(16).padStart(4,"0")}` : ch;
+      }).join("");
+    }
+
     function buildCandidates(files){
       const out = [];
       files.forEach(f=>{
-        out.push(f);
-        out.push(stripAccents(f));
-        out.push(f.replaceAll(" ","_"));
-        out.push(stripAccents(f).replaceAll(" ","_"));
-        out.push(f.toLowerCase());
-        out.push(stripAccents(f).toLowerCase());
-        out.push(f.replaceAll(" ","-"));
-        out.push(stripAccents(f).replaceAll(" ","-"));
-        out.push(f.replaceAll("_"," "));
-        out.push(stripAccents(f.replaceAll("_"," ")));
+        const stripped = stripAccents(f);
+        [
+          f,
+          stripped,
+          f.replaceAll(" ","_"),
+          stripped.replaceAll(" ","_"),
+          f.toLowerCase(),
+          stripped.toLowerCase(),
+          f.replaceAll(" ","-"),
+          stripped.replaceAll(" ","-"),
+          f.replaceAll("_"," "),
+          stripped.replaceAll("_"," "),
+          toHashUnicode(f),
+          toHashUnicode(stripped)
+        ].forEach(x=>out.push(x));
       });
       return unique(out);
     }
@@ -2044,11 +986,11 @@
       const progression = getProgressToNext(total);
 
       const seriesStats = getSeriesStats(selected);
-      el.selectedName.textContent = selected.name + (state.mode === "team" ? " • " + selected.teamName : "");
-      el.selectedMeta.textContent = `Cumul actuel : ${formatKg(total)} • ${seriesStats.count} saisie${seriesStats.count > 1 ? "s" : ""}`;
+      el.selectedName.textContent = selected.name;
+      el.selectedMeta.textContent = `${state.mode === "team" ? selected.teamName + " • " : ""}Cumul actuel : ${formatKg(total)} • ${seriesStats.count} saisie${seriesStats.count > 1 ? "s" : ""}`;
 
-      el.currentAnimal.textContent = current.name;
-      el.nextAnimal.textContent = next ? next.name : "Maximum atteint";
+      el.currentAnimal.textContent = animalLabel(current);
+      el.nextAnimal.textContent = next ? animalLabel(next) : "Maximum atteint";
       el.studentProgressBar.style.width = progression.percent + "%";
       el.studentProgressText.textContent = progression.text;
 
@@ -2201,36 +1143,43 @@
       }
 
       const classTotal = getClassTotal();
+      const leader = items[0] || null;
       const classAnimal = getCurrentAnimal(classTotal);
-      const max = Math.max(1, ...items.map(i=>i.total));
-      const medals = ["🥇","🥈","🥉"];
-      el.ranking.innerHTML = items.length ? items.map((item, idx)=>`
-        <div class="rankItem">
-          <div class="rankTop">
-            <div class="rankNameWrap">
-              <span class="rankBadge">${medals[idx] || `${idx+1}e`}</span>
-              <div>${state.mode==="team" ? `<span class="colorDot" style="background:${item.color};"></span>` : ""}${item.name}</div>
-            </div>
-            <div>${item.label}</div>
-          </div>
-          <div class="smallText" style="margin-bottom:5px;">${item.animal.icon ? item.animal.icon + " " : ""}${item.animal.name}${item.sub ? " • " + item.sub : ""}</div>
-          <div class="progress"><div style="width:${Math.min(100,(item.total/max)*100)}%;"></div></div>
-        </div>
-      `).join("") : `<div class="empty">Aucun résultat.</div>`;
-
       el.rankingSummary.innerHTML = `
-        <div class="summaryChip classTotalBox">
-          <div>
+        <div class="summaryChip">
+          <div class="smallText">Meilleur total</div>
+          <strong>${leader ? leader.label : "0 kg"}</strong>
+        </div>
+        <div class="summaryChip">
+          <div class="smallText">Objectif actuel</div>
+          <strong>${leader ? animalLabel(leader.animal) : "—"}</strong>
+        </div>
+        <div class="summaryFooter">
+          <div class="summaryChip">
             <div class="smallText">Charge soulevée par la classe</div>
             <strong>${formatKg(classTotal)}</strong>
-            <div class="smallText" style="margin-top:4px;">Objectif atteint : ${classAnimal.name}</div>
-          </div>
-          <div class="classAnimalLarge">
-            ${classAnimal.count ? `<span class="count">${classAnimal.count}</span>` : ""}
-            <span>${classAnimal.icon || ""}</span>
+            <div class="classAnimalLarge">
+              <div class="classAnimalIcon">${animalIconMarkup(classAnimal)}</div>
+              <div class="classAnimalText">
+                <strong>${classAnimal.name}</strong>
+                <div class="smallText">animal atteint par la classe</div>
+              </div>
+            </div>
           </div>
         </div>
       `;
+
+      const max = Math.max(1, ...items.map(i=>i.total));
+      el.ranking.innerHTML = items.length ? items.map((item, idx)=>`
+        <div class="rankItem">
+          <div class="rankTop">
+            <div>${state.mode==="team" ? `<span class="colorDot" style="background:${item.color};"></span>` : ""}#${idx+1} • ${item.name}</div>
+            <div>${item.label}</div>
+          </div>
+          <div class="smallText" style="margin-bottom:5px;">${animalLabel(item.animal)}${item.sub ? " • " + item.sub : ""}</div>
+          <div class="progress"><div style="width:${Math.min(100,(item.total/max)*100)}%;"></div></div>
+        </div>
+      `).join("") : `<div class="empty">Aucun résultat.</div>`;
     }
 
     function renderStatsTable(){
@@ -2354,6 +1303,4 @@
         });
       }
     }
-  </script>
-</body>
-</html>
+  
