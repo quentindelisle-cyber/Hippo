@@ -348,6 +348,8 @@
 
       updateCalcPreview();
       document.addEventListener("fullscreenchange", renderFullscreenButton);
+      window.matchMedia?.("(display-mode: fullscreen)")?.addEventListener?.("change", renderFullscreenButton);
+      window.matchMedia?.("(display-mode: standalone)")?.addEventListener?.("change", renderFullscreenButton);
     }
 
     function sanitizePositiveIntFinal(value, fallback){
@@ -458,6 +460,12 @@
       `).join("");
     }
 
+    function isStandaloneDisplay(){
+      return window.matchMedia?.("(display-mode: fullscreen)")?.matches
+        || window.matchMedia?.("(display-mode: standalone)")?.matches
+        || window.navigator.standalone === true;
+    }
+
     function toggleFullscreen(){
       const doc = document;
       const root = doc.documentElement;
@@ -474,7 +482,13 @@
     function renderFullscreenButton(){
       if(!el.fullscreenBtn) return;
       const active = !!document.fullscreenElement;
-      el.fullscreenBtn.textContent = active ? "Quitter le plein écran" : "Plein écran";
+      if(active){
+        el.fullscreenBtn.textContent = "Quitter le plein écran";
+      } else if(isStandaloneDisplay()){
+        el.fullscreenBtn.textContent = "Plein écran natif";
+      } else {
+        el.fullscreenBtn.textContent = "Plein écran";
+      }
     }
 
     function getClassTotal(){
@@ -850,24 +864,28 @@
       }).join("");
     }
 
+    function fromHashUnicode(str){
+      return String(str || "").replace(/#U([0-9a-fA-F]{4})/g, (_, hex)=>String.fromCharCode(parseInt(hex,16)));
+    }
+
     function buildCandidates(files){
       const out = [];
       files.forEach(f=>{
-        const stripped = stripAccents(f);
-        [
-          f,
-          stripped,
-          f.replaceAll(" ","_"),
-          stripped.replaceAll(" ","_"),
-          f.toLowerCase(),
-          stripped.toLowerCase(),
-          f.replaceAll(" ","-"),
-          stripped.replaceAll(" ","-"),
-          f.replaceAll("_"," "),
-          stripped.replaceAll("_"," "),
-          toHashUnicode(f),
-          toHashUnicode(stripped)
-        ].forEach(x=>out.push(x));
+        const decoded = fromHashUnicode(f);
+        const stripped = stripAccents(decoded);
+        [decoded, stripped].forEach(base=>{
+          [
+            base,
+            base.replaceAll(" ","_"),
+            base.replaceAll(" ","-"),
+            base.replaceAll("_"," "),
+            base.toLowerCase(),
+            base.toLowerCase().replaceAll(" ","_"),
+            base.toLowerCase().replaceAll(" ","-"),
+            toHashUnicode(base),
+            toHashUnicode(stripAccents(base))
+          ].forEach(x=>out.push(x));
+        });
       });
       return unique(out);
     }
@@ -1173,7 +1191,7 @@
       el.ranking.innerHTML = items.length ? items.map((item, idx)=>`
         <div class="rankItem">
           <div class="rankTop">
-            <div>${state.mode==="team" ? `<span class="colorDot" style="background:${item.color};"></span>` : ""}#${idx+1} • ${item.name}</div>
+            <div>${state.mode==="team" ? `<span class="colorDot" style="background:${item.color};"></span>` : ""}${idx===0 ? "🥇" : idx===1 ? "🥈" : idx===2 ? "🥉" : `#${idx+1}`} • ${item.name}</div>
             <div>${item.label}</div>
           </div>
           <div class="smallText" style="margin-bottom:5px;">${animalLabel(item.animal)}${item.sub ? " • " + item.sub : ""}</div>

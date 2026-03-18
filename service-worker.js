@@ -1,4 +1,4 @@
-const CACHE_NAME = "hippopogramme-pwa-v2";
+const CACHE_NAME = "hippopogramme-pwa-v3";
 
 const CORE_ASSETS = [
   "./",
